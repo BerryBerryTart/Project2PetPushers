@@ -1,3 +1,5 @@
 # Pets For Lonely People
 
-Chakong Xiong
+
+- Chakong Xiong
+- Biren Sarvaiya
