@@ -1,0 +1,236 @@
+body{
+	margin:0;
+	color:#6a6f8c;
+	background:#c8c8c8;
+	font:600 16px/18px 'Open Sans',sans-serif;
+    background-image: url("assets/accent_interior_brick_walls_1200x480.jpg");
+}
+*,:after,:before{box-sizing:border-box}
+.clearfix:after,.clearfix:before{content:'';display:table}
+.clearfix:after{clear:both;display:block}
+a{color:inherit;text-decoration:none}
+
+.login-wrap{/*this is the form id. it contains login-htm */
+	width:100%;
+	margin:auto;
+	max-width:525px;
+	min-height:670px;
+	position:relative;
+	background:url("assets/white_cypher.gif") repeat center top;
+	/*box-shadow:0 25px 15px 0 rgba(0,0,0,.30),0 50px 50px 0 rgba(65,7,7,.75);*/
+}
+.login-html{/*this is the mask that lies within the login-wrap. note the position is absolute. it also contains the sign in and sign up tabs*/
+	visibility: visible;
+	width:100%;
+	height:100%;
+	position:absolute;
+	padding:90px 70px 50px 70px;
+	background:rgba(65, 7, 7, 0.75);
+	box-shadow:0 25px 15px 0 rgba(0,0,0,.30),0 50px 50px 0 rgba(65,7,7,.75);
+}
+.employee-html{
+	visibility: hidden;
+	width:100%;
+	height:100%;
+	position:absolute;
+	padding:90px 70px 50px 70px;
+	
+
+	background:rgb(47, 255, 75, .75);
+	box-shadow:0 25px 15px 0 rgba(0,0,0,.30),0 50px 50px 0 rgba(11, 138, 28, 0.75);
+}
+.employee-html  .button{
+	color:black;
+	background:#c8c8c8;
+	font:600 16px/18px 'Open Sans',sans-serif;
+	text-transform:uppercase;
+	border:none;
+	border-radius:25px;
+	/*margin-left: 13%;*/
+
+	margin: auto;
+	width: 50%;
+	padding: 5px;
+	position:absolute;
+
+	background:#3f8d00;
+	cursor: pointer;
+
+}
+.custom-select .textReimbursement{
+	color: black;
+	background-color: rgba(255,255,255,.2);
+	max-width: inherit;
+	max-height: 180px;
+
+}
+.custom-select .reimbursement{
+	color: black;
+	background-color: rgba(255,255,255,.2);
+	max-width: inherit;
+}
+.employee-html .custom-select{
+	color: black;
+	position:absolute;
+	border-radius:2px;
+	width:inherit;
+	max-height: 180px;
+	position:relative;
+	display:inline-block;
+	background: rgba(11, 138, 28, 0.75);
+	
+}
+.financeManager-html{
+	visibility: hidden;
+	width:100%;
+	height:100%;
+	position:absolute;
+	padding:90px 70px 50px 70px;
+	background:rgba(255, 255, 0, 0.671);
+	box-shadow:0 25px 15px 0 rgba(0,0,0,.30),0 50px 50px 0 rgba(146, 146, 6, 0.671);
+}
+.login-html .sign-in-htm,
+.login-html .sign-up-htm{
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	position:absolute;
+	transform:rotateY(180deg);
+	backface-visibility:hidden;
+	transition:all .5s linear;
+}
+.login-html .sign-in,
+.login-html .sign-up,
+.login-form .group .check{
+	display:none;
+}
+.login-html .tab,
+.login-form .group .label,
+.login-form .group .button{
+	text-transform:uppercase;
+}
+.login-html .tab{
+	font-size:22px;
+	margin-right:15px;
+	padding-bottom:5px;
+	margin:0 15px 10px 0;
+	display:inline-block;
+	border-bottom:2px solid transparent;
+}
+.login-html .sign-in:checked + .tab,
+.login-html .sign-up:checked + .tab{/*line under the sign up or sign in tab lables*/
+	color:#fff;
+	border-color:#4d0707;
+}
+.login-form{
+	min-height:345px;
+	position:relative;
+	perspective:1000px;
+	transform-style:preserve-3d;
+}
+.login-form .group{
+	margin-bottom:15px;
+}
+.login-form .group .label,
+.login-form .group .input,
+.login-form .group .button{
+	width:100%;
+	color:#fff;
+	display:block;
+}
+
+.login-form .group .input,
+.login-form .group .button{
+	border:none;
+	padding:15px 20px;
+	border-radius:25px;
+	background:rgba(255,255,255,.1);
+}
+.login-form .group input[data-type="password"]{
+	/*text-security:circle; unrecognized command*/
+	-webkit-text-security: circle;
+}
+.login-form .group .label{
+	color:#aaa;
+	font-size:12px;
+}
+.login-form .group .button{/*any buttin in the login form*/
+	background:#4d0707;
+	cursor: pointer;
+}
+.group .button:hover {
+	padding-right: 25px;
+	
+	
+  }
+.button span::before {
+	position: absolute;
+	opacity: 0;
+	top: 0;
+	right: 20px;
+	transition: 0.5s;
+  }
+ 
+.login-form .group label .icon{
+	width:15px;
+	height:15px;
+	border-radius:2px;
+	position:relative;
+	display:inline-block;
+	background:rgba(255,255,255,.1);
+}
+.login-form .group label .icon:before,
+.login-form .group label .icon:after{
+	content:'';
+	width:10px;
+	height:2px;
+	background:#fff;
+	position:absolute;
+	transition:all .2s ease-in-out 0s;
+}
+.login-form .group label .icon:before{
+	left:3px;
+	width:5px;
+	bottom:6px;
+	transform:scale(0) rotate(0);
+}
+.login-form .group label .icon:after{
+	top:6px;
+	right:0;
+	transform:scale(0) rotate(0);
+}
+.login-form .group .check:checked + label{
+	color:#fff;
+}
+.login-form .group .check:checked + label .icon{
+	background:#ee1111;
+}
+.login-form .group .check:checked + label .icon:before{
+	transform:scale(1) rotate(45deg);
+}
+.login-form .group .check:checked + label .icon:after{
+	transform:scale(1) rotate(-45deg);
+}
+.login-html .sign-in:checked + .tab + .sign-up + .tab + .login-form .sign-in-htm{
+	transform:rotate(0);
+}
+.login-html .sign-up:checked + .tab + .login-form .sign-up-htm{
+	transform:rotate(0);
+}
+.employee-html .hr{
+	height:2px;
+	margin:60px 0 50px 0;
+	background:rgba(0, 0, 0, 0.349);
+}
+.employee-html .foot-lnk{
+	color: black;
+}
+.hr{
+	height:2px;
+	margin:60px 0 50px 0;
+	background:rgba(255,255,255,.2);
+}
+.foot-lnk{
+	text-align:center;
+}
