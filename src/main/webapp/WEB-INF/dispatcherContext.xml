@@ -13,7 +13,7 @@
 	<mvc:default-servlet-handler/>
 	<mvc:annotation-driven></mvc:annotation-driven>
 	<mvc:resources location="/static/" mapping="/static/**"></mvc:resources>
-	<context:component-scan base-package="com.revature.controller"></context:component-scan>
+	<context:component-scan base-package="com.pets.controller"></context:component-scan>
 	
 	<bean name="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/static/" />
