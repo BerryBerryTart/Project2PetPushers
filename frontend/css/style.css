@@ -1,52 +1,3 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-    display: block;
-}
-body {
-    line-height: 1;
-}
-ol, ul {
-    list-style: none;
-}
-blockquote, q {
-    quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-    content: '';
-    content: none;
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-/*CSS reset above to fix any bad css*/ 
 
 body{
 	margin:0;
@@ -55,7 +6,8 @@ body{
 	font:600 14px 'Open Sans',sans-serif;
 	position: relative;
     background-image: url("assets/petsBackground.png");
-	scroll-behavior:initial;
+	overflow: scroll;
+	
 }
 .mask{
 	visibility: visible;
@@ -64,11 +16,17 @@ body{
 	position:fixed;
 	background:rgba(214, 83, 181, 0.439);
 }
-
+.vertical-center {
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+  }
 .leftCard{
     width:100%;
 	margin:auto;
-    Margin-top: 2%;
+    Margin-top: 35px;
     margin-left: 5%;
 	max-width:525px;
 	min-height:670px;
@@ -88,22 +46,35 @@ h2{
 	text-align: justify;
 }
 .petButton{
-	
+	position: relative;
+	float: center;
 	margin-top: 20px;
 	margin-bottom: 20px;
-	margin-left: 5%;
+	margin-left: 30%;
 	margin-right: 5%;
-	border-radius: 20px;
-	padding: 20px;
-	background-color: rgb(29, 68, 196);
-	font:600 14px 'Open Sans',sans-serif;
+	border-radius: 30px;
+	padding: 25px;
+	font:600 24px 'Open Sans',sans-serif;
+	color: rgb(110, 51, 24);
+
+	/* assets/bone.png */
+	background: url("assets/bone.png") no-repeat center center; 
+  /* -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain; */
+  background-size: 90% 100%;
+  /* border-color: rgb(0,0,0,.85); */
+  border-block-start-color: rgba(210, 180, 140, 0.350);
+  border-inline-start-color: rgba(210, 180, 140, 0.350);
+  border-inline-end-color: rgba(250, 128, 114, 0.350);
+  border-block-end-color: rgba(250, 128, 114, 0.350);
 	
 }
 .rightCard{
     width:100%;
 	margin:auto;
     margin-top: 35px;
-    margin-right: 5%;
+    margin-right: 15%;
     margin-left: 50%;
 	max-width:525px;
 	min-height:670px;
