@@ -9,9 +9,17 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Proxy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "adoption_request_status")
 @Proxy(lazy = false)
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
 public class AdoptionRequestStatus {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +28,4 @@ public class AdoptionRequestStatus {
 
 	@Column(name = "adoption_request", length = 15, unique = true)
 	private String adoption_request;
-
-	public AdoptionRequestStatus() {
-	}
 }
