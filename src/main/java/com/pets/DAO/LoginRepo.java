@@ -65,9 +65,9 @@ public class LoginRepo {
 //		user.setUser_role(role);
 		session.persist(user);
 		
-		if (session != null) {
-			session.close();
-		}
+//		if (session != null) {
+//			session.close();
+//		}
 		
 		return user;
 	}
