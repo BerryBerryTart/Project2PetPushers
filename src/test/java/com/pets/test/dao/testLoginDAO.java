@@ -23,7 +23,8 @@ import com.pets.model.User;
 
 @ExtendWith(SpringExtension.class)
 @ContextHierarchy({
-	@ContextConfiguration("classpath:applicationContext.xml")
+	@ContextConfiguration(locations = "classpath:applicationContext.xml"),
+	@ContextConfiguration(locations = "classpath:dispatcherContext.xml")
 })
 @WebAppConfiguration
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

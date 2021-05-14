@@ -43,7 +43,7 @@ public class SpringORMHibernateConfig {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		
 		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setPackagesToScan("com.revature.model");
+		sessionFactory.setPackagesToScan("com.pets.model");
 		
 		// Configure hibernate properties
 		Properties hibernateProperties = new Properties();
