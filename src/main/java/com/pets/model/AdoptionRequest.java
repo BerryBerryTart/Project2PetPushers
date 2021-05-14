@@ -17,9 +17,17 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Proxy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "adoption_requests")
 @Proxy(lazy = false)
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
 public class AdoptionRequest {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +59,4 @@ public class AdoptionRequest {
 
 	@Column(name = "adoption_request_resolved")
 	private Date adoption_request_resolved;
-
-	public AdoptionRequest() {		
-	}
 }

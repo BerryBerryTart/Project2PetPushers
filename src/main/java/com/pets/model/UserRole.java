@@ -9,9 +9,17 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Proxy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "user_role")
 @Proxy(lazy = false)
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
 public class UserRole {
 
 	@Id
@@ -21,7 +29,4 @@ public class UserRole {
 
 	@Column(name = "user_role", length = 15, unique = true)
 	private String user_role;
-
-	public UserRole() {
-	}
 }

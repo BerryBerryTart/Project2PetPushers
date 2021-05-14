@@ -8,56 +8,62 @@ import java.security.NoSuchAlgorithmException;
 import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.berry.DTO.CreateUserDTO;
-import com.berry.DTO.LoginDTO;
-import com.berry.app.Application;
-import com.berry.exception.CreationException;
-import com.berry.exception.DatabaseExeption;
-import com.berry.exception.NotFoundException;
-import com.berry.model.Role;
-import com.berry.model.Users;
-import com.berry.util.SessionUtility;
+import com.pets.DTO.CreateUserDTO;
+import com.pets.DTO.LoginDTO;
+import com.pets.exception.CreationException;
+import com.pets.exception.DatabaseExeption;
+import com.pets.exception.NotFoundException;
+import com.pets.model.User;
+import com.pets.model.UserRole;
+import com.pets.util.SessionUtility;
 
+@Repository
 public class LoginRepo {
-	private static Logger logger = LoggerFactory.getLogger(Application.class);
+	private static Logger logger = LoggerFactory.getLogger(LoginRepo.class);
 	
-	public Users createUser(CreateUserDTO createUserDTO) throws CreationException, DatabaseExeption {
-		Session session = SessionUtility.getSession();
-		Users user = null;
-		boolean userExistsAlready = true;
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@Transactional
+	public User createUser(CreateUserDTO createUserDTO) throws CreationException, DatabaseExeption {
+		Session session = sessionFactory.getCurrentSession();
+		User user = null;
+//		boolean userExistsAlready = true;
+//		
+//		String hql = "FROM User u WHERE u.username = :username AND u.email = :email";
+//		try {
+//			Query query = session.createQuery(hql);
+//			query.setParameter("username", createUserDTO.getUsername());
+//			query.setParameter("email", createUserDTO.getEmail());
+//			user = (User) query.getSingleResult();
+//		} catch (NoResultException e) {
+//			userExistsAlready = false;
+//		}
+//		
+//		if (userExistsAlready) {
+//			logger.error("Username/Email Already Exists");
+//			throw new CreationException("Username/Email Already Exists");
+//		}
 		
-		String hql = "FROM Users u WHERE u.username = :username AND u.email = :email";
-		try {
-			Query query = session.createQuery(hql);
-			query.setParameter("username", createUserDTO.getUsername());
-			query.setParameter("email", createUserDTO.getEmail());
-			user = (Users) query.getSingleResult();
-		} catch (NoResultException e) {
-			userExistsAlready = false;
-		}
+//		UserRole role = session.load(UserRole.class, 1);
 		
-		if (userExistsAlready == true) {
-			logger.error("Username/Email Already Exists");
-			throw new CreationException("Username/Email Already Exists");
-		}
-		
-		Role role = session.load(Role.class, 1);
-		
-		session.beginTransaction();
-		user = new Users();
+//		session.beginTransaction();
+		user = new User();
 		user.setFirst_name(createUserDTO.getFirst_name());
 		user.setLast_name(createUserDTO.getLast_name());
 		user.setEmail(createUserDTO.getEmail());
 		user.setUsername(createUserDTO.getUsername());
 		user.setPassword(hashPassword(createUserDTO.getPassword()));
-		user.setRole_id(role);
-		session.save(user);
-		
-		session.getTransaction().commit();
+//		user.setUser_role(role);
+		session.persist(user);
 		
 		if (session != null) {
 			session.close();
@@ -66,17 +72,18 @@ public class LoginRepo {
 		return user;
 	}
 
-	public Users loginUser(LoginDTO loginDTO) throws NotFoundException, DatabaseExeption {
-		Session session = SessionUtility.getSession();
+	@Transactional
+	public User loginUser(LoginDTO loginDTO) throws NotFoundException, DatabaseExeption {
+		Session session = sessionFactory.getCurrentSession();
 		
-		Users user = null;
-		String hql = "FROM Users u WHERE u.username = :username AND u.password = :password";
+		User user = null;
+		String hql = "FROM User u WHERE u.username = :username AND u.password = :password";
 		
 		try {
 			Query query = session.createQuery(hql);
 			query.setParameter("username", loginDTO.getUsername());
 			query.setParameter("password", hashPassword(loginDTO.getPassword()));
-			user = (Users) query.getSingleResult();		
+			user = (User) query.getSingleResult();		
 		} catch (NoResultException e) {
 			logger.error("User DNE");
 			throw new NotFoundException("User Not Found");
