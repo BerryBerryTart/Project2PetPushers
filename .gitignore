@@ -9,6 +9,7 @@ db.ini
 main.js
 /src/main/resources/static/
 hibernate.cfg.xml
+.factorypath
 
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
