@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,6 +19,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -39,7 +43,8 @@ import com.pets.test.util.Base64Conversion;
 @WebAppConfiguration
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // lets us use before all as non static
-public class testPetDAO {
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS) // clean up tables after
+public class TestPetDAO {
 	// test image of one pixel, for brevity
 	private static final String blobString = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQImWP4//8/AAX+Av5Y8msOAAAAAElFTkSuQmCC";
 
@@ -65,6 +70,15 @@ public class testPetDAO {
 		assertTrue(petType2.getPet_type_id() != 0);
 		assertTrue(petStatus1.getPet_status_id() != 0);
 		assertTrue(petStatus2.getPet_status_id() != 0);
+	}
+
+	@Test
+	@Transactional
+	@Order(0)
+	void testPetListEmpty() throws NotFoundException {
+		List<Pet> petList = petRepo.getAllPets();
+		//NOTHING should be in the list at the start
+		assertTrue(petList.size() == 0);
 	}
 
 	@Test
@@ -187,8 +201,8 @@ public class testPetDAO {
 			petRepo.updatePetById(Integer.MAX_VALUE, dto);
 		});
 	}
-	
-	//TEST CREATING A NEW DIGITAL PET
+
+	// TEST CREATING A NEW DIGITAL PET
 	@Test
 	@Transactional
 	@Order(7)
@@ -217,17 +231,23 @@ public class testPetDAO {
 		// check auto generated timestamp if it exists
 		assertNotNull(pet.getPet_list_date());
 	}
+	
+	@Test
+	@Transactional
+	@Order(8)
+	void getPetListWithPets () throws NotFoundException {
+		List<Pet> petList = petRepo.getAllPets();
+		//pet list should have at least something in it
+		assertTrue(petList.size() > 0);
+	}
 
 	@Test
 	@Transactional
 	@Order(100)
 	@Commit
 	void testDeletePetById() throws NotFoundException, UpdateException {
-
 		boolean result = petRepo.deletePetById(1);
-
 		assertTrue(result);
-
 		// Make sure pet does not exist in database
 		Assertions.assertThrows(NotFoundException.class, () -> {
 			petRepo.getPetById(1);

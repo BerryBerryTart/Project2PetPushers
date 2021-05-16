@@ -13,6 +13,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -37,7 +39,8 @@ import com.pets.model.UserRole;
 @WebAppConfiguration
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) //lets us use before all as non static
-class testLoginDAO {
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS) //clean up tables after
+class TestLoginDAO {
 
 	@Autowired
 	private EnumeratedRepo enumRepo;

@@ -19,10 +19,10 @@ public class EnumeratedRepo {
 	
 	@Transactional
 	public UserRole createUserRole(String name) {
-		Session session = sessionFactory.getCurrentSession();		
-		UserRole userRole = new UserRole();		
-		userRole.setUser_role(name);		
-		session.persist(userRole);		
+		Session session = sessionFactory.getCurrentSession();
+		UserRole userRole = new UserRole();	
+		userRole.setUser_role(name);
+		session.persist(userRole);
 		return userRole;
 	}
 	
@@ -48,7 +48,7 @@ public class EnumeratedRepo {
 	public AdoptionRequestStatus createAdoptionStatus(String name) {
 		Session session = sessionFactory.getCurrentSession();
 		AdoptionRequestStatus adoptStatus = new AdoptionRequestStatus();
-		adoptStatus.setAdoption_request(name);
+		adoptStatus.setAdoption_request_status(name);
 		session.persist(adoptStatus);
 		return adoptStatus;
 	}

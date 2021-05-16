@@ -25,9 +25,9 @@ import lombok.ToString;
 public class AdoptionRequestStatus {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "adoption_request_id")
-	private int adoption_request_id;
+	@Column(name = "adoption_request_status_id")
+	private int adoption_request_status_id;
 
-	@Column(name = "adoption_request", length = 15, unique = true)
-	private String adoption_request;
+	@Column(name = "adoption_request_status", length = 15, unique = true)
+	private String adoption_request_status;
 }

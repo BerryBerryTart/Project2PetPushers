@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pets.exception.CreationException;
 import com.pets.exception.NotFoundException;
 import com.pets.model.AdoptionRequest;
 import com.pets.model.AdoptionRequestStatus;
@@ -24,22 +25,42 @@ public class AdoptionRequestRepo {
 	private SessionFactory sessionFactory;
 	
 	@Transactional
-	public AdoptionRequest createAdoptionRequest(User user, Pet pet, String requestString) {
+	public AdoptionRequest createAdoptionRequest(User user, Pet pet, String requestString) throws CreationException {
 		Session session = sessionFactory.getCurrentSession();
 		AdoptionRequest adoptRequest = new AdoptionRequest();
 		
-		//TODO: setup logic to check if a request already exists for a pet
+		//logic to check if a request already exists for a user
+		String hqlRequestCheck = "FROM AdoptionRequest ars WHERE ars.adoption_request_pet=:pet AND "
+				+ "ars.adoption_request_user=:user";
+		try {
+			Query<?> reqCheckQuery = session.createQuery(hqlRequestCheck);
+			reqCheckQuery.setParameter("user", user);
+			reqCheckQuery.setParameter("pet", pet);
+			AdoptionRequest checkedRequest = (AdoptionRequest) reqCheckQuery.getSingleResult();
+			if (checkedRequest != null) {
+				throw new CreationException("Request For This Pet Already Exists");
+			}
+		} catch (NoResultException e) {}
 		
 		adoptRequest.setAdoption_request_user(user);
 		adoptRequest.setAdoption_request_pet(pet);
 		adoptRequest.setAdoption_request_description(requestString);
 		
-		//set request status
-		AdoptionRequestStatus status = session.load(AdoptionRequestStatus.class, 1);
+		String hql = "FROM AdoptionRequestStatus ars WHERE ars.adoption_request_status = :ars_status";
+		Query<?> query = session.createQuery(hql);
+		
+		//set request status for real pets and automatically approve digital pets
+		if (pet.getPet_type().getPet_type().equals("real")) {
+			query.setParameter("ars_status", "pending");		
+		} else if (pet.getPet_type().getPet_type().equals("digital")) {
+			query.setParameter("ars_status", "approved");
+		}
+		
+		AdoptionRequestStatus ars = (AdoptionRequestStatus) query.getSingleResult();
+		AdoptionRequestStatus status = session.load(AdoptionRequestStatus.class, ars.getAdoption_request_status_id());
 		adoptRequest.setAdoption_request_status(status);
 		
-		session.persist(adoptRequest);
-		
+		session.persist(adoptRequest);		
 		return adoptRequest;
 	}
 	
@@ -51,7 +72,7 @@ public class AdoptionRequestRepo {
 		String hql = "FROM AdoptionRequest ar WHERE ar.adoption_request_user=:user";
 		
 		try {
-			Query query = session.createQuery(hql);
+			Query<AdoptionRequest> query = session.createQuery(hql);
 			query.setParameter("user", user);
 			requestList = query.getResultList();
 			
