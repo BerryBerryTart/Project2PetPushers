@@ -1,5 +1,8 @@
 package com.pets.DAO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
@@ -62,6 +65,13 @@ public class PetRepo {
 		session.persist(pet);
 		
 		return pet;
+	}
+	
+	@Transactional
+	public List<Pet> getAllPets(){
+		List<Pet> petList = new ArrayList<>();
+		
+		return petList;
 	}
 	
 	@Transactional
