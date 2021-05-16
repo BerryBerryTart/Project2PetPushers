@@ -39,7 +39,7 @@ public class LoginRepo {
 		
 		String hql = "FROM User u WHERE u.username = :username AND u.email = :email";
 		try {
-			Query query = session.createQuery(hql);
+			Query<?> query = session.createQuery(hql);
 			query.setParameter("username", createUserDTO.getUsername());
 			query.setParameter("email", createUserDTO.getEmail());
 			user = (User) query.getSingleResult();
@@ -52,7 +52,15 @@ public class LoginRepo {
 			throw new CreationException("Username/Email Already Exists");
 		}
 		
-		UserRole role = session.load(UserRole.class, 1);
+		/* User Role Where:
+		 * 1. customer
+		 * 2. manager
+		 */
+		String hqlRole = "From UserRole ur WHERE ur.user_role=:role";
+		Query<?> roleQuery = session.createQuery(hqlRole);
+		roleQuery.setParameter("role", "customer");
+		UserRole ur = (UserRole) roleQuery.getSingleResult();
+		UserRole role = session.load(UserRole.class, ur.getUser_role_id());
 
 		user.setFirst_name(createUserDTO.getFirst_name());
 		user.setLast_name(createUserDTO.getLast_name());
@@ -73,7 +81,7 @@ public class LoginRepo {
 		String hql = "FROM User u WHERE u.username = :username AND u.password = :password";
 		
 		try {
-			Query query = session.createQuery(hql);
+			Query<?> query = session.createQuery(hql);
 			query.setParameter("username", loginDTO.getUsername());
 			query.setParameter("password", hashPassword(loginDTO.getPassword()));
 			user = (User) query.getSingleResult();		
@@ -94,10 +102,6 @@ public class LoginRepo {
 			hashed = String.format("%064x", new BigInteger(1, digest));
 		} catch (NoSuchAlgorithmException e) {
 			throw new DatabaseExeption(e.getMessage());
-		}
-		
-		if (hashed == null) {
-			throw new DatabaseExeption("Password Encryption Error");
 		}
 		
 		return hashed;

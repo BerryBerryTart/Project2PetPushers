@@ -44,7 +44,7 @@ public class AdoptionRequest {
 	private Pet adoption_request_pet;
 
 	@OneToOne
-	@JoinColumn(name = "adoption_request_status", referencedColumnName = "adoption_request_id")
+	@JoinColumn(name = "adoption_request_status", referencedColumnName = "adoption_request_status_id")
 	private AdoptionRequestStatus adoption_request_status;
 
 	@Column(name = "adoption_request_description", length = 255)

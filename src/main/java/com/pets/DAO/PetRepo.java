@@ -1,5 +1,8 @@
 package com.pets.DAO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.NoResultException;
 
 import org.hibernate.Session;
@@ -43,25 +46,51 @@ public class PetRepo {
 		 * 1. unadopted
 		 * 2. adopted
 		 * */
-		PetStatus status = session.load(PetStatus.class, 1);
+		String hqlStatus = "FROM PetStatus ps WHERE ps.pet_status=:pet_status";
+		Query<?> statusQuery = session.createQuery(hqlStatus);
+		statusQuery.setParameter("pet_status", "unadopted");				
+		PetStatus ps = (PetStatus) statusQuery.getSingleResult();		
+		PetStatus status = session.load(PetStatus.class, ps.getPet_status_id());
 		pet.setPet_status(status);
 		
 		/* Type where:
 		 * 1. real
 		 * 2. digital
 		 * */
-		String stringType = createPetDTO.getPet_type();
-		PetType petType = null;		
-		if (stringType.equals("real")) {
-			petType = session.load(PetType.class, 1);
-		} else if (stringType.equals("digital")) {
-			petType = session.load(PetType.class, 2);
-		}
+		String hqlType = "FROM PetType pt WHERE pt.pet_type=:pet_type";
+		Query<?> typeQuery = session.createQuery(hqlType);
+		typeQuery.setParameter("pet_type", createPetDTO.getPet_type());
+		PetType pt = (PetType) typeQuery.getSingleResult();	
+		PetType petType = session.load(PetType.class, pt.getPet_type_id());
 		pet.setPet_type(petType);
 		
 		session.persist(pet);
 		
 		return pet;
+	}
+	
+	//returns a list of REAL pets that are unadopted
+	@Transactional
+	public List<Pet> getAllPets() throws NotFoundException{
+		Session session = sessionFactory.getCurrentSession();
+		List<Pet> petList = new ArrayList<>();
+		
+		//load up proxy object
+		String hqlStatus = "FROM PetStatus ps WHERE ps.pet_status=:pet_status";
+		Query<?> statusQuery = session.createQuery(hqlStatus);
+		statusQuery.setParameter("pet_status", "unadopted");				
+		PetStatus ps = (PetStatus) statusQuery.getSingleResult();		
+		PetStatus status = session.load(PetStatus.class, ps.getPet_status_id());
+		
+		//get the list
+		String hql = "FROM Pet p WHERE p.pet_status=:status";
+		
+		Query<Pet> listQuery = session.createQuery(hql);
+		listQuery.setParameter("status", status);	
+		petList = listQuery.getResultList();
+		
+		
+		return petList;
 	}
 	
 	@Transactional
@@ -72,7 +101,7 @@ public class PetRepo {
 		String hql = "FROM Pet p WHERE p.pet_id = :id";
 		
 		try {
-			Query query = session.createQuery(hql);
+			Query<?> query = session.createQuery(hql);
 			query.setParameter("id", id);
 			
 			pet = (Pet) query.getSingleResult();
@@ -128,7 +157,7 @@ public class PetRepo {
 		
 		String hql = "DELETE FROM Pet p WHERE p.pet_id = :id";
 		
-		Query query = session.createQuery(hql);
+		Query<?> query = session.createQuery(hql);
 		query.setParameter("id", id);
 		
 		int updateCount = query.executeUpdate();
