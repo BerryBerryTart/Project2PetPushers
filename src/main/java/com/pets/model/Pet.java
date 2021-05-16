@@ -15,8 +15,17 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name = "pets")
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
 public class Pet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +62,4 @@ public class Pet {
 	@OneToOne
 	@JoinColumn(name = "pet_status", referencedColumnName = "pet_status_id")
 	private PetStatus pet_status;
-
-	public Pet() {
-	}
 }

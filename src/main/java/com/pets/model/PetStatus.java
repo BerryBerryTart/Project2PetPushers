@@ -9,9 +9,19 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Proxy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name = "pet_status")
 @Proxy(lazy = false)
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode @ToString
 public class PetStatus {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +30,4 @@ public class PetStatus {
 
 	@Column(name = "pet_status", length = 15, unique = true)
 	private String pet_status;
-
-	public PetStatus() {
-	}
 }

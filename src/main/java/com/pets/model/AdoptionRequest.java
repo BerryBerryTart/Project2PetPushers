@@ -17,9 +17,18 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Proxy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name = "adoption_requests")
 @Proxy(lazy = false)
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
 public class AdoptionRequest {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +44,7 @@ public class AdoptionRequest {
 	private Pet adoption_request_pet;
 
 	@OneToOne
-	@JoinColumn(name = "adoption_request_status", referencedColumnName = "pet_status_id")
+	@JoinColumn(name = "adoption_request_status", referencedColumnName = "adoption_request_id")
 	private AdoptionRequestStatus adoption_request_status;
 
 	@Column(name = "adoption_request_description", length = 255)
@@ -51,7 +60,4 @@ public class AdoptionRequest {
 
 	@Column(name = "adoption_request_resolved")
 	private Date adoption_request_resolved;
-
-	public AdoptionRequest() {		
-	}
 }

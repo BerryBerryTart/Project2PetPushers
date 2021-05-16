@@ -12,8 +12,16 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
-@Table(name = "users")
+@Table(name = "user")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode @ToString
 public class User {
 
 	@Id
@@ -42,15 +50,4 @@ public class User {
 	@JoinColumn(name = "user_role_id", referencedColumnName = "user_role_id")
 	private UserRole user_role;
 
-	public User() {
-	}
-
-	public User(String username, String password, String first_name, String last_name, String email) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.first_name = first_name;
-		this.last_name = last_name;
-		this.email = email;
-	}
 }
