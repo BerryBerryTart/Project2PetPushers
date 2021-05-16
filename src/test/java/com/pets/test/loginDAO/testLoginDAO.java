@@ -20,7 +20,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pets.DAO.LoginRepo;
-import com.pets.DAO.UserRoleRepo;
+import com.pets.DAO.EnumeratedRepo;
 import com.pets.DTO.CreateUserDTO;
 import com.pets.DTO.LoginDTO;
 import com.pets.exception.CreationException;
@@ -40,7 +40,7 @@ import com.pets.model.UserRole;
 class testLoginDAO {
 
 	@Autowired
-	private UserRoleRepo userRoleRepo;
+	private EnumeratedRepo enumRepo;
 	
 	@Autowired
 	private LoginRepo loginRepo;
@@ -48,9 +48,8 @@ class testLoginDAO {
 	@BeforeAll
 	@Transactional
 	@Commit
-	void ennumerateTable() {
-		UserRole role;
-		role = userRoleRepo.createUserRole("customer");
+	void enumerateTable() {
+		UserRole role = enumRepo.createUserRole("customer");
 		
 		assertTrue(role.getUser_role_id() != 0);
 	}
