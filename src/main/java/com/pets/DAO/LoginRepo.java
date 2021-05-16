@@ -34,7 +34,7 @@ public class LoginRepo {
 	@Transactional
 	public User createUser(CreateUserDTO createUserDTO) throws CreationException, DatabaseExeption {
 		Session session = sessionFactory.getCurrentSession();
-		User user = null;
+		User user = new User();
 		boolean userExistsAlready = true;
 		
 		String hql = "FROM User u WHERE u.username = :username AND u.email = :email";
@@ -54,7 +54,6 @@ public class LoginRepo {
 		
 		UserRole role = session.load(UserRole.class, 1);
 
-		user = new User();
 		user.setFirst_name(createUserDTO.getFirst_name());
 		user.setLast_name(createUserDTO.getLast_name());
 		user.setEmail(createUserDTO.getEmail());
