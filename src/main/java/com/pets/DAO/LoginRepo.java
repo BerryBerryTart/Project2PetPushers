@@ -23,7 +23,6 @@ import com.pets.exception.DatabaseExeption;
 import com.pets.exception.NotFoundException;
 import com.pets.model.User;
 import com.pets.model.UserRole;
-import com.pets.util.SessionUtility;
 
 @Repository
 public class LoginRepo {
@@ -36,38 +35,33 @@ public class LoginRepo {
 	public User createUser(CreateUserDTO createUserDTO) throws CreationException, DatabaseExeption {
 		Session session = sessionFactory.getCurrentSession();
 		User user = null;
-//		boolean userExistsAlready = true;
-//		
-//		String hql = "FROM User u WHERE u.username = :username AND u.email = :email";
-//		try {
-//			Query query = session.createQuery(hql);
-//			query.setParameter("username", createUserDTO.getUsername());
-//			query.setParameter("email", createUserDTO.getEmail());
-//			user = (User) query.getSingleResult();
-//		} catch (NoResultException e) {
-//			userExistsAlready = false;
-//		}
-//		
-//		if (userExistsAlready) {
-//			logger.error("Username/Email Already Exists");
-//			throw new CreationException("Username/Email Already Exists");
-//		}
+		boolean userExistsAlready = true;
 		
-//		UserRole role = session.load(UserRole.class, 1);
+		String hql = "FROM User u WHERE u.username = :username AND u.email = :email";
+		try {
+			Query query = session.createQuery(hql);
+			query.setParameter("username", createUserDTO.getUsername());
+			query.setParameter("email", createUserDTO.getEmail());
+			user = (User) query.getSingleResult();
+		} catch (NoResultException e) {
+			userExistsAlready = false;
+		}
 		
-//		session.beginTransaction();
+		if (userExistsAlready) {
+			logger.error("Username/Email Already Exists");
+			throw new CreationException("Username/Email Already Exists");
+		}
+		
+		UserRole role = session.load(UserRole.class, 1);
+
 		user = new User();
 		user.setFirst_name(createUserDTO.getFirst_name());
 		user.setLast_name(createUserDTO.getLast_name());
 		user.setEmail(createUserDTO.getEmail());
 		user.setUsername(createUserDTO.getUsername());
 		user.setPassword(hashPassword(createUserDTO.getPassword()));
-//		user.setUser_role(role);
+		user.setUser_role(role);
 		session.persist(user);
-		
-//		if (session != null) {
-//			session.close();
-//		}
 		
 		return user;
 	}
@@ -87,16 +81,12 @@ public class LoginRepo {
 		} catch (NoResultException e) {
 			logger.error("User DNE");
 			throw new NotFoundException("User Not Found");
-		} finally {
-			if (session != null) {
-				session.close();
-			}			
 		}
 		
 		return user;
 	}
 	
-	private String hashPassword(String s) throws DatabaseExeption {
+	private static String hashPassword(String s) throws DatabaseExeption {
 		String hashed = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");

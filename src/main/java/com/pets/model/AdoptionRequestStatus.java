@@ -11,15 +11,17 @@ import org.hibernate.annotations.Proxy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "adoption_request_status")
 @Proxy(lazy = false)
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode @ToString
 public class AdoptionRequestStatus {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

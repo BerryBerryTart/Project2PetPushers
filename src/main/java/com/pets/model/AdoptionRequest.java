@@ -23,11 +23,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "adoption_requests")
 @Proxy(lazy = false)
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
 public class AdoptionRequest {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

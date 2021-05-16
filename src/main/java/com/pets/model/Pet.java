@@ -21,10 +21,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "pets")
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
 public class Pet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
