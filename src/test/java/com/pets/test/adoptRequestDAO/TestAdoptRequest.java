@@ -31,9 +31,11 @@ import com.pets.DAO.PetRepo;
 import com.pets.DTO.CreateUserDTO;
 import com.pets.DTO.LoginDTO;
 import com.pets.DTO.PetDTO;
+import com.pets.DTO.UpdateAdoptionRequestDTO;
 import com.pets.exception.CreationException;
 import com.pets.exception.DatabaseExeption;
 import com.pets.exception.NotFoundException;
+import com.pets.exception.UpdateException;
 import com.pets.model.AdoptionRequest;
 import com.pets.model.AdoptionRequestStatus;
 import com.pets.model.Pet;
@@ -136,13 +138,13 @@ public class TestAdoptRequest {
 		// create adoption request 1
 		String requestDescription1 = "pet request description";
 		AdoptionRequest adoptRequest1 = requestRepo.createAdoptionRequest(user1, pet1, requestDescription1);
-		
-		//try to make a request for pet 1 again
-		//should throw an error
+
+		// try to make a request for pet 1 again
+		// should throw an error
 		Assertions.assertThrows(CreationException.class, () -> {
 			requestRepo.createAdoptionRequest(user1, pet1, requestDescription1);
 		});
-		
+
 		// create adoption request 2 for later
 		String requestDescription2 = "pet request description";
 		requestRepo.createAdoptionRequest(user1, pet2, requestDescription2);
@@ -164,7 +166,7 @@ public class TestAdoptRequest {
 		User user1 = loginRepo.loginUser(new LoginDTO("username", "password"));
 		assertNotNull(user1);
 
-		List<AdoptionRequest> petList = requestRepo.getAllAdoptionRequest(user1);
+		List<AdoptionRequest> petList = requestRepo.getUserAllAdoptionRequest(user1);
 
 		// pet list SHOULD have more at least one pet in it
 		assertTrue(petList.size() != 0);
@@ -177,7 +179,7 @@ public class TestAdoptRequest {
 		User user2 = loginRepo.loginUser(new LoginDTO("new_username", "new_password"));
 		assertNotNull(user2);
 
-		List<AdoptionRequest> petList = requestRepo.getAllAdoptionRequest(user2);
+		List<AdoptionRequest> petList = requestRepo.getUserAllAdoptionRequest(user2);
 
 		// pet list SHOULD have more at least one pet in it
 		assertTrue(petList.size() == 0);
@@ -207,6 +209,105 @@ public class TestAdoptRequest {
 		AdoptionRequest adoptRequest = requestRepo.createAdoptionRequest(user, pet, "digital pet request description");
 		// check request status. should be approved on creation
 		assertTrue(adoptRequest.getAdoption_request_status().getAdoption_request_status().equals("approved"));
+	}
+
+	@Test
+	@Transactional
+	@Order(5)
+	void testUserGetsAdoptionRequestByValidID() throws NotFoundException, DatabaseExeption {
+		// log in a user
+		User user = loginRepo.loginUser(new LoginDTO("username", "password"));
+		assertNotNull(user);
+
+		AdoptionRequest ar = requestRepo.getUserAdoptionRequestById(1, user);
+
+		// Request SHOULD exist
+		assertNotNull(ar);
+	}
+
+	@Test
+	@Transactional
+	@Order(6)
+	void testUserGetsAdoptionRequestDoesNotExist() throws NotFoundException, DatabaseExeption {
+		// log in a user
+		User user = loginRepo.loginUser(new LoginDTO("username", "password"));
+		assertNotNull(user);
+
+		Assertions.assertThrows(NotFoundException.class, () -> {
+			requestRepo.getUserAdoptionRequestById(Integer.MAX_VALUE, user);
+		});
+	}
+
+	@Test
+	@Transactional
+	@Order(7)
+	void testUserGetsAdoptionRequest_notOwnedByThem() throws NotFoundException, DatabaseExeption {
+		// log in a user
+		User user = loginRepo.loginUser(new LoginDTO("new_username", "new_password"));
+		assertNotNull(user);
+
+		Assertions.assertThrows(NotFoundException.class, () -> {
+			requestRepo.getUserAdoptionRequestById(1, user);
+		});
+	}
+
+	// ADMIN TESTS
+	@Test
+	@Transactional
+	@Order(50)
+	void testManagerGetsAllRequests() throws NotFoundException {
+		List<AdoptionRequest> petList = requestRepo.getManagerAllAdoptionRequest();
+		// pet list SHOULD have more at least one pet in it
+		assertTrue(petList.size() != 0);
+	}
+
+	@Test
+	@Transactional
+	@Order(51)
+	void testManagerGetsRequestByid() throws NotFoundException {
+		AdoptionRequest ar = requestRepo.getManagerAdoptionRequestById(1);
+		// Request SHOULD exist
+		assertNotNull(ar);
+	}
+
+	@Test
+	@Transactional
+	@Order(52)
+	void testManagerGetsRequestByid_doesNotExist() {
+		Assertions.assertThrows(NotFoundException.class, () -> {
+			requestRepo.getManagerAdoptionRequestById(Integer.MAX_VALUE);
+		});
+	}
+
+	@Test
+	@Transactional
+	@Order(53)
+	@Commit
+	void testManagerUpdatesRequestByid() throws UpdateException {
+		UpdateAdoptionRequestDTO dto = new UpdateAdoptionRequestDTO();
+
+		dto.setReason("reason");
+		dto.setStatus("approved");
+
+		AdoptionRequest ar = requestRepo.managerApproveDenyRequest(1, dto);
+		System.out.println(ar);
+		assertNotNull(ar.getAdoption_request_resolved());
+		assertTrue(ar.getAdoption_request_response().equals("reason"));
+		assertTrue(ar.getAdoption_request_status().getAdoption_request_status().equals("approved"));
+	}
+
+	@Test
+	@Transactional
+	@Order(60)
+	void testManagerUpdatesRequestByid_doesNotExist() {
+		UpdateAdoptionRequestDTO dto = new UpdateAdoptionRequestDTO();
+
+		dto.setReason("reason");
+		dto.setStatus("approved");
+		
+		Assertions.assertThrows(UpdateException.class, () -> {
+			requestRepo.managerApproveDenyRequest(Integer.MAX_VALUE, dto);
+		});
 	}
 
 }
