@@ -51,7 +51,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE adoption_requests_status (
-	adoption_request_id INTEGER(20) PRIMARY KEY AUTO_INCREMENT,
+	adoption_request_status_id INTEGER(20) PRIMARY KEY AUTO_INCREMENT,
 	adoption_request VARCHAR(15) NOT NULL UNIQUE
 );
 
@@ -66,5 +66,5 @@ CREATE TABLE adoption_requests (
 	adoption_request_resolved TIMESTAMP,
 	CONSTRAINT `fk_adoption_requests_pets` FOREIGN KEY (adoption_request_pet_id) REFERENCES pets (pet_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT `fk_adoption_requests_users` FOREIGN KEY (adoption_request_user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT `fk_adoption_requests_adoption_requests_status` FOREIGN KEY (adoption_request_status_id) REFERENCES adoption_requests_status (adoption_request_id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT `fk_adoption_requests_adoption_requests_status` FOREIGN KEY (adoption_request_status_id) REFERENCES adoption_requests_status (adoption_request_status_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
