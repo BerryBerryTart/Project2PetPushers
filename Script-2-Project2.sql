@@ -52,7 +52,7 @@ CREATE TABLE users (
 
 CREATE TABLE adoption_requests_status (
 	adoption_request_status_id INTEGER(20) PRIMARY KEY AUTO_INCREMENT,
-	adoption_request VARCHAR(15) NOT NULL UNIQUE
+	adoption_request_status VARCHAR(15) NOT NULL UNIQUE
 );
 
 CREATE TABLE adoption_requests (
