@@ -66,10 +66,10 @@ class TestPetDAO {
 		PetStatus petStatus1 = enumRepo.createPetStatus("unadopted");
 		PetStatus petStatus2 = enumRepo.createPetStatus("adopted");
 
-		assertNotEquals(petType1.getPet_type_id(), 0);
-		assertNotEquals(petType2.getPet_type_id(), 0);
-		assertNotEquals(petStatus1.getPet_status_id(), 0);
-		assertNotEquals(petStatus2.getPet_status_id(), 0);
+		assertNotEquals(0, petType1.getPet_type_id());
+		assertNotEquals(0, petType2.getPet_type_id());
+		assertNotEquals(0, petStatus1.getPet_status_id());
+		assertNotEquals(0, petStatus2.getPet_status_id());
 	}
 
 	@Test
@@ -78,7 +78,7 @@ class TestPetDAO {
 	void testPetListEmpty() throws NotFoundException {
 		List<Pet> petList = petRepo.getAllPets();
 		//NOTHING should be in the list at the start
-		assertEquals(petList.size(), 0);
+		assertEquals(0, petList.size());
 	}
 
 	@Test
@@ -101,10 +101,10 @@ class TestPetDAO {
 
 		pet = petRepo.createPet(dto);
 
-		assertNotEquals(pet.getPet_id(), 0);
+		assertNotEquals(0, pet.getPet_id());
 
 		// check auto generated unadopted status
-		assertEquals(pet.getPet_status().getPet_status(), "unadopted");
+		assertEquals("unadopted", pet.getPet_status().getPet_status());
 
 		// check auto generated timestamp if it exists
 		assertNotNull(pet.getPet_list_date());
@@ -179,12 +179,12 @@ class TestPetDAO {
 		Pet pet = petRepo.updatePetById(1, dto);
 
 		// update assertions
-		assertEquals(pet.getPet_age(), 11);
-		assertEquals(pet.getPet_name(), "newer pet_name");
-		assertEquals(pet.getPet_breed(), "newer pet_breed");
-		assertEquals(pet.getPet_species(), "newer pet_species");
-		assertEquals(pet.getPet_description(), "newer pet_description");
-		assertArrayEquals(pet.getPet_image(), dummyImage.getBytes());
+		assertEquals(11, pet.getPet_age());
+		assertEquals("newer pet_name", pet.getPet_name());
+		assertEquals("newer pet_breed", pet.getPet_breed());
+		assertEquals("newer pet_species", pet.getPet_species());
+		assertEquals("newer pet_description", pet.getPet_description());
+		assertArrayEquals(dummyImage.getBytes(), pet.getPet_image());
 
 		// make sure created date remains immutable
 		assertEquals(created, pet.getPet_list_date());
@@ -223,10 +223,10 @@ class TestPetDAO {
 
 		pet = petRepo.createPet(dto);
 
-		assertNotEquals(pet.getPet_id(), 0);
+		assertNotEquals(0, pet.getPet_id());
 
 		// check auto generated unadopted status
-		assertEquals(pet.getPet_status().getPet_status(), "unadopted");
+		assertEquals("unadopted", pet.getPet_status().getPet_status());
 
 		// check auto generated timestamp if it exists
 		assertNotNull(pet.getPet_list_date());
@@ -238,7 +238,7 @@ class TestPetDAO {
 	void getPetListWithPets () throws NotFoundException {
 		List<Pet> petList = petRepo.getAllPets();
 		//pet list should have at least something in it
-		assertNotEquals(petList.size(), 0);
+		assertNotEquals(0, petList.size());
 	}
 
 	@Test

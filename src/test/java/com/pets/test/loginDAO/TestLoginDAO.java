@@ -55,7 +55,7 @@ class TestLoginDAO {
 	void enumerateTable() {
 		UserRole role = enumRepo.createUserRole("customer");
 		
-		assertNotEquals(role.getUser_role_id(), 0);
+		assertNotEquals(0, role.getUser_role_id());
 	}
 	
 	@Test
@@ -68,8 +68,8 @@ class TestLoginDAO {
 		
 		user = loginRepo.createUser(createUserDTO);
 				
-		assertNotEquals(user.getUser_id(), 0);
-		assertEquals(user.getUser_role().getUser_role(), "customer");
+		assertNotEquals(0, user.getUser_id());
+		assertEquals("customer", user.getUser_role().getUser_role());
 	}
 	
 	@Test
