@@ -7,13 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SessionUtility {
-	private static Logger logger = LoggerFactory.getLogger(SessionUtility.class);
 	private static String url;
 	private static String user;
 	private static String pass;
 	
 	private static SessionFactory sessionFactory;
 
+	private SessionUtility() {		
+	}
+	
 	public synchronized static Session getSession() {
 		if (sessionFactory == null) {
 			getCreds();
@@ -28,6 +30,8 @@ public class SessionUtility {
 	}
 	
 	private static void getCreds() {
-				
+		url = System.getenv("db.url");
+		user = System.getenv("db.user");
+		pass = System.getenv("db.password");
 	}
 }

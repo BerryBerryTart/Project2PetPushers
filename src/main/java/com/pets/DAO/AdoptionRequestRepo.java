@@ -9,6 +9,8 @@ import javax.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +26,13 @@ import com.pets.model.User;
 
 @Repository
 public class AdoptionRequestRepo {
+	private static Logger logger = LoggerFactory.getLogger(AdoptionRequestRepo.class);
+	
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	private static String arsColName = "ars_status";
+	
 	@Transactional
 	public AdoptionRequest createAdoptionRequest(User user, Pet pet, String requestString) throws CreationException {
 		Session session = sessionFactory.getCurrentSession();
@@ -40,10 +46,11 @@ public class AdoptionRequestRepo {
 			reqCheckQuery.setParameter("user", user);
 			reqCheckQuery.setParameter("pet", pet);
 			AdoptionRequest checkedRequest = (AdoptionRequest) reqCheckQuery.getSingleResult();
-			if (checkedRequest != null) {
+			if (checkedRequest != null) {				
 				throw new CreationException("Request For This Pet Already Exists");
 			}
 		} catch (NoResultException e) {
+			logger.debug("Creating adoption request");
 		}
 
 		adoptRequest.setAdoption_request_user(user);
@@ -55,9 +62,9 @@ public class AdoptionRequestRepo {
 
 		// set request status for real pets and automatically approve digital pets
 		if (pet.getPet_type().getPet_type().equals("real")) {
-			query.setParameter("ars_status", "pending");
+			query.setParameter(arsColName, "pending");
 		} else if (pet.getPet_type().getPet_type().equals("digital")) {
-			query.setParameter("ars_status", "approved");
+			query.setParameter(arsColName, "approved");
 		}
 
 		AdoptionRequestStatus ars = (AdoptionRequestStatus) query.getSingleResult();
@@ -71,7 +78,7 @@ public class AdoptionRequestRepo {
 	@Transactional
 	public List<AdoptionRequest> getUserAllAdoptionRequest(User user) throws NotFoundException {
 		Session session = sessionFactory.getCurrentSession();
-		List<AdoptionRequest> requestList = new ArrayList<>();
+		List<AdoptionRequest> requestList = null;
 
 		String hql = "FROM AdoptionRequest ar WHERE ar.adoption_request_user=:user";
 	
@@ -105,7 +112,7 @@ public class AdoptionRequestRepo {
 	@Transactional
 	public List<AdoptionRequest> getManagerAllAdoptionRequest() throws NotFoundException {
 		Session session = sessionFactory.getCurrentSession();
-		List<AdoptionRequest> requestList = new ArrayList<>();
+		List<AdoptionRequest> requestList = null;
 
 		String hql = "FROM AdoptionRequest ar";
 	
@@ -133,14 +140,29 @@ public class AdoptionRequestRepo {
 	}
 
 	@Transactional
-	public AdoptionRequest managerApproveDenyRequest(int id, UpdateAdoptionRequestDTO dto) throws UpdateException {
+	public AdoptionRequest managerApproveDenyRequest(int id, UpdateAdoptionRequestDTO dto) throws UpdateException, NotFoundException {
 		Session session = sessionFactory.getCurrentSession();
 		AdoptionRequest ar = null;
-
+		
+		//logic to check if a request has been approved / denied
+		//if so then throw an error
+		String hqlCheck = "FROM AdoptionRequest ar WHERE ar.adoption_request_id=:id";		
+		try {
+			Query<?> query = session.createQuery(hqlCheck);
+			query.setParameter("id", id);
+			ar = (AdoptionRequest) query.getSingleResult();
+			String status = ar.getAdoption_request_status().getAdoption_request_status();
+			if (status.equals("approved") || status.equals("rejected")) {
+				throw new UpdateException("Request has already been " + status);
+			}
+		} catch (NoResultException e) {
+			throw new NotFoundException("Adoption Request with id " + id + " not found");
+		}
+		
 		// object setup
 		String hqlStatus = "FROM AdoptionRequestStatus ars WHERE ars.adoption_request_status = :ars_status";
 		Query<?> queryStatus = session.createQuery(hqlStatus);
-		queryStatus.setParameter("ars_status", dto.getStatus());
+		queryStatus.setParameter(arsColName, dto.getStatus());
 		AdoptionRequestStatus ars = (AdoptionRequestStatus) queryStatus.getSingleResult();
 		AdoptionRequestStatus status = session.load(AdoptionRequestStatus.class, ars.getAdoption_request_status_id());
 		
@@ -159,13 +181,31 @@ public class AdoptionRequestRepo {
 
 		int count = query.executeUpdate();
 		
+		//fallback just in case
 		if (count <= 0) {
 			throw new UpdateException("Failed to update request with id " + id);
 		}
 		
 		//TODO: set all outstanding requests for other pets to N/A
+		// object setup
+		hqlStatus = "FROM AdoptionRequestStatus ars WHERE ars.adoption_request_status = :ars_status";
+		queryStatus = session.createQuery(hqlStatus);
+		queryStatus.setParameter(arsColName, "rejected");
+		ars = (AdoptionRequestStatus) queryStatus.getSingleResult();
+		AdoptionRequestStatus newStatus = session.load(AdoptionRequestStatus.class, ars.getAdoption_request_status_id());
 		
-		ar = session.get(AdoptionRequest.class, id);
+		//set all outstanding requests for other pets to N/A
+		String hqlUpdateOthers = "UPDATE AdoptionRequest ar SET ar.adoption_request_status=:status "
+				+ "WHERE ar.adoption_request_id!=:id";
+		queryStatus = session.createQuery(hqlUpdateOthers);
+		queryStatus.setParameter("status", newStatus);
+		queryStatus.setParameter("id", id);
+		queryStatus.executeUpdate();
+		
+		//set return object params
+		ar.setAdoption_request_response(dto.getReason());
+		ar.setAdoption_request_status(status);
+		ar.setAdoption_request_resolved(now);
 		
 		return ar;
 	}

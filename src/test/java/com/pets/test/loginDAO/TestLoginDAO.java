@@ -1,7 +1,8 @@
 package com.pets.test.loginDAO;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,8 +22,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pets.DAO.LoginRepo;
 import com.pets.DAO.EnumeratedRepo;
+import com.pets.DAO.LoginRepo;
 import com.pets.DTO.CreateUserDTO;
 import com.pets.DTO.LoginDTO;
 import com.pets.exception.CreationException;
@@ -54,7 +55,7 @@ class TestLoginDAO {
 	void enumerateTable() {
 		UserRole role = enumRepo.createUserRole("customer");
 		
-		assertTrue(role.getUser_role_id() != 0);
+		assertNotEquals(role.getUser_role_id(), 0);
 	}
 	
 	@Test
@@ -67,8 +68,8 @@ class TestLoginDAO {
 		
 		user = loginRepo.createUser(createUserDTO);
 				
-		assertTrue(user.getUser_id() != 0);
-		assertTrue(user.getUser_role().getUser_role().equals("customer"));
+		assertNotEquals(user.getUser_id(), 0);
+		assertEquals(user.getUser_role().getUser_role(), "customer");
 	}
 	
 	@Test

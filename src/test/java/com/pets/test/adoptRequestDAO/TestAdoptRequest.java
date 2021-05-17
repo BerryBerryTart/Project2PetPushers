@@ -1,5 +1,7 @@
 package com.pets.test.adoptRequestDAO;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,7 +53,7 @@ import com.pets.model.UserRole;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // lets us use before all as non static
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS) // clean up tables after
-public class TestAdoptRequest {
+class TestAdoptRequest {
 	@Autowired
 	private EnumeratedRepo enumRepo;
 
@@ -63,6 +65,9 @@ public class TestAdoptRequest {
 
 	@Autowired
 	private AdoptionRequestRepo requestRepo;
+
+	// some variables to use later
+	private static int testForDenialAfterApprovalID;
 
 	@BeforeAll
 	@Transactional
@@ -90,9 +95,9 @@ public class TestAdoptRequest {
 		AdoptionRequestStatus reqStatus1 = enumRepo.createAdoptionStatus("pending");
 		AdoptionRequestStatus reqStatus2 = enumRepo.createAdoptionStatus("approved");
 		AdoptionRequestStatus reqStatus3 = enumRepo.createAdoptionStatus("rejected");
-		assertTrue(reqStatus1.getAdoption_request_status_id() != 0);
-		assertTrue(reqStatus2.getAdoption_request_status_id() != 0);
-		assertTrue(reqStatus3.getAdoption_request_status_id() != 0);
+		assertNotEquals(reqStatus1.getAdoption_request_status_id(), 0);
+		assertNotEquals(reqStatus2.getAdoption_request_status_id(), 0);
+		assertNotEquals(reqStatus3.getAdoption_request_status_id(), 0);
 	}
 
 	@Test
@@ -103,13 +108,19 @@ public class TestAdoptRequest {
 		// Create dummy user 1
 		CreateUserDTO createUser1DTO = new CreateUserDTO("firstName", "lastName", "username", "password", "email");
 		User user1 = loginRepo.createUser(createUser1DTO);
-		assertTrue(user1.getUser_id() != 0);
+		assertNotEquals(user1.getUser_id(), 0);
 
 		// create dummy user 2
 		CreateUserDTO createUser2DTO = new CreateUserDTO("new_firstName", "new_lastName", "new_username",
 				"new_password", "new_email");
 		User user2 = loginRepo.createUser(createUser2DTO);
-		assertTrue(user2.getUser_id() != 0);
+		assertNotEquals(user2.getUser_id(), 0);
+
+		// create dummy user 3
+		CreateUserDTO createUser3DTO = new CreateUserDTO("newer_firstName", "newer_lastName", "newer_username",
+				"newer_password", "newer_email");
+		User user3 = loginRepo.createUser(createUser3DTO);
+		assertNotEquals(user3.getUser_id(), 0);
 
 		// create dummy pet 1
 		PetDTO petDto1 = new PetDTO();
@@ -121,7 +132,7 @@ public class TestAdoptRequest {
 		petDto1.setPet_description("pet_description");
 		petDto1.setPet_image("image".getBytes());
 		Pet pet1 = petRepo.createPet(petDto1);
-		assertTrue(pet1.getPet_id() != 0);
+		assertNotEquals(pet1.getPet_id(), 0);
 
 		// create dummy pet 2
 		PetDTO petDto2 = new PetDTO();
@@ -133,7 +144,7 @@ public class TestAdoptRequest {
 		petDto2.setPet_description("pet_description");
 		petDto2.setPet_image("image".getBytes());
 		Pet pet2 = petRepo.createPet(petDto2);
-		assertTrue(pet2.getPet_id() != 0);
+		assertNotEquals(pet2.getPet_id(), 0);
 
 		// create adoption request 1
 		String requestDescription1 = "pet request description";
@@ -149,8 +160,12 @@ public class TestAdoptRequest {
 		String requestDescription2 = "pet request description";
 		requestRepo.createAdoptionRequest(user1, pet2, requestDescription2);
 
+		// allow user 3 to request adoption for pet 1
+		AdoptionRequest adoptRequest3 = requestRepo.createAdoptionRequest(user3, pet1, "description");
+		testForDenialAfterApprovalID = adoptRequest3.getAdoption_request_id();
+
 		// check if ID was generated
-		assertTrue(adoptRequest1.getAdoption_request_id() != 0);
+		assertNotEquals(adoptRequest1.getAdoption_request_id(), 0);
 		// check if status is pending on generation
 		assertTrue(adoptRequest1.getAdoption_request_status().getAdoption_request_status().equals("pending"));
 		// check that created timestamp is not null
@@ -169,7 +184,7 @@ public class TestAdoptRequest {
 		List<AdoptionRequest> petList = requestRepo.getUserAllAdoptionRequest(user1);
 
 		// pet list SHOULD have more at least one pet in it
-		assertTrue(petList.size() != 0);
+		assertNotEquals(petList.size(), 0);
 	}
 
 	@Test
@@ -182,7 +197,7 @@ public class TestAdoptRequest {
 		List<AdoptionRequest> petList = requestRepo.getUserAllAdoptionRequest(user2);
 
 		// pet list SHOULD have more at least one pet in it
-		assertTrue(petList.size() == 0);
+		assertEquals(petList.size(), 0);
 	}
 
 	@Test
@@ -200,7 +215,7 @@ public class TestAdoptRequest {
 		petDto.setPet_description("digital pet_description");
 		petDto.setPet_image("image".getBytes());
 		Pet pet = petRepo.createPet(petDto);
-		assertTrue(pet.getPet_id() != 0);
+		assertNotEquals(pet.getPet_id(), 0);
 
 		// log in a user
 		User user = loginRepo.loginUser(new LoginDTO("username", "password"));
@@ -208,7 +223,7 @@ public class TestAdoptRequest {
 
 		AdoptionRequest adoptRequest = requestRepo.createAdoptionRequest(user, pet, "digital pet request description");
 		// check request status. should be approved on creation
-		assertTrue(adoptRequest.getAdoption_request_status().getAdoption_request_status().equals("approved"));
+		assertEquals(adoptRequest.getAdoption_request_status().getAdoption_request_status(), "approved");
 	}
 
 	@Test
@@ -258,7 +273,7 @@ public class TestAdoptRequest {
 	void testManagerGetsAllRequests() throws NotFoundException {
 		List<AdoptionRequest> petList = requestRepo.getManagerAllAdoptionRequest();
 		// pet list SHOULD have more at least one pet in it
-		assertTrue(petList.size() != 0);
+		assertNotEquals(petList.size(), 0);
 	}
 
 	@Test
@@ -283,7 +298,7 @@ public class TestAdoptRequest {
 	@Transactional
 	@Order(53)
 	@Commit
-	void testManagerUpdatesRequestByid() throws UpdateException {
+	void testManagerUpdatesRequestByid() throws UpdateException, NotFoundException {
 		UpdateAdoptionRequestDTO dto = new UpdateAdoptionRequestDTO();
 
 		dto.setReason("reason");
@@ -292,8 +307,39 @@ public class TestAdoptRequest {
 		AdoptionRequest ar = requestRepo.managerApproveDenyRequest(1, dto);
 		System.out.println(ar);
 		assertNotNull(ar.getAdoption_request_resolved());
-		assertTrue(ar.getAdoption_request_response().equals("reason"));
-		assertTrue(ar.getAdoption_request_status().getAdoption_request_status().equals("approved"));
+		assertEquals(ar.getAdoption_request_response(), "reason");
+		assertEquals(ar.getAdoption_request_status().getAdoption_request_status(), "approved");
+	}
+
+	@Test
+	@Transactional
+	@Order(54)
+	@Commit
+	void testManagerUpdatesRequestByid_alreadyApproved() throws UpdateException, NotFoundException {
+		UpdateAdoptionRequestDTO dto = new UpdateAdoptionRequestDTO();
+
+		dto.setReason("reason");
+		dto.setStatus("approved");
+
+		Assertions.assertThrows(UpdateException.class, () -> {
+			requestRepo.managerApproveDenyRequest(1, dto);
+		});
+	}
+
+	@Test
+	@Transactional
+	@Order(55)
+	@Commit
+	void testOtherRequestsRejectedForSamePetAfterApproval() throws NotFoundException {
+		AdoptionRequest ar = requestRepo.getManagerAdoptionRequestById(testForDenialAfterApprovalID);
+		
+		//make sure this is for pet 1
+		Pet pet1 = petRepo.getPetById(1);
+		assertEquals(pet1, ar.getAdoption_request_pet());
+		
+		// another user requested to adopt this pet
+		// after it was approved, expect that it is rejected
+		assertEquals(ar.getAdoption_request_status().getAdoption_request_status(), "rejected");
 	}
 
 	@Test
@@ -304,8 +350,8 @@ public class TestAdoptRequest {
 
 		dto.setReason("reason");
 		dto.setStatus("approved");
-		
-		Assertions.assertThrows(UpdateException.class, () -> {
+
+		Assertions.assertThrows(NotFoundException.class, () -> {
 			requestRepo.managerApproveDenyRequest(Integer.MAX_VALUE, dto);
 		});
 	}
