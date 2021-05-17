@@ -1,16 +1,3 @@
-/target/
-db.ini
-*.class
-*.jar
-*.war
-/.settings/
-/bin/
-.classpath
-main.js
-/src/main/resources/static/
-hibernate.cfg.xml
-.factorypath
-
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
@@ -30,8 +17,10 @@ speed-measure-plugin*.json
 # IDEs and editors
 /.idea
 .project
+.classpath
 .c9/
 *.launch
+.settings/
 *.sublime-workspace
 
 # IDE - VSCode
