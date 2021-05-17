@@ -22,6 +22,7 @@ import com.pets.exception.UpdateException;
 import com.pets.model.AdoptionRequest;
 import com.pets.model.AdoptionRequestStatus;
 import com.pets.model.Pet;
+import com.pets.model.PetStatus;
 import com.pets.model.User;
 
 @Repository
@@ -186,7 +187,7 @@ public class AdoptionRequestRepo {
 			throw new UpdateException("Failed to update request with id " + id);
 		}
 		
-		//TODO: set all outstanding requests for other pets to N/A
+		//set all outstanding requests for other pets to N/A
 		// object setup
 		hqlStatus = "FROM AdoptionRequestStatus ars WHERE ars.adoption_request_status = :ars_status";
 		queryStatus = session.createQuery(hqlStatus);
@@ -194,13 +195,23 @@ public class AdoptionRequestRepo {
 		ars = (AdoptionRequestStatus) queryStatus.getSingleResult();
 		AdoptionRequestStatus newStatus = session.load(AdoptionRequestStatus.class, ars.getAdoption_request_status_id());
 		
-		//set all outstanding requests for other pets to N/A
+		//NOW set all outstanding requests for other pets to N/A
 		String hqlUpdateOthers = "UPDATE AdoptionRequest ar SET ar.adoption_request_status=:status "
 				+ "WHERE ar.adoption_request_id!=:id";
 		queryStatus = session.createQuery(hqlUpdateOthers);
 		queryStatus.setParameter("status", newStatus);
 		queryStatus.setParameter("id", id);
 		queryStatus.executeUpdate();
+		
+		//change pet's status to adopted
+		hqlStatus = "FROM PetStatus ps WHERE ps.pet_status=:pet_status";		
+		queryStatus = session.createQuery(hqlStatus);
+		queryStatus.setParameter("pet_status", "adopted");	
+		PetStatus ps = (PetStatus) queryStatus.getSingleResult();		
+		PetStatus newPetStatus = session.load(PetStatus.class, ps.getPet_status_id());
+		Pet pet = ar.getAdoption_request_pet();
+		pet.setPet_status(newPetStatus);
+		session.persist(pet);
 		
 		//set return object params
 		ar.setAdoption_request_response(dto.getReason());

@@ -76,28 +76,28 @@ class TestAdoptRequest {
 		// create dummy user roles for testing
 		UserRole role1 = enumRepo.createUserRole("customer");
 		UserRole role2 = enumRepo.createUserRole("manager");
-		assertTrue(role1.getUser_role_id() != 0);
-		assertTrue(role2.getUser_role_id() != 0);
+		assertNotEquals(0, role1.getUser_role_id());
+		assertNotEquals(0, role2.getUser_role_id());
 
 		// create dummy pet types
 		PetType petType1 = enumRepo.createPetType("real");
 		PetType petType2 = enumRepo.createPetType("digital");
-		assertTrue(petType1.getPet_type_id() != 0);
-		assertTrue(petType2.getPet_type_id() != 0);
+		assertNotEquals(0, petType1.getPet_type_id());
+		assertNotEquals(0, petType2.getPet_type_id());
 
 		// create dummy pet status'
 		PetStatus petStatus1 = enumRepo.createPetStatus("unadopted");
 		PetStatus petStatus2 = enumRepo.createPetStatus("adopted");
-		assertTrue(petStatus1.getPet_status_id() != 0);
-		assertTrue(petStatus2.getPet_status_id() != 0);
+		assertNotEquals(0, petStatus1.getPet_status_id());
+		assertNotEquals(0, petStatus2.getPet_status_id());
 
 		// create dummy request status'
 		AdoptionRequestStatus reqStatus1 = enumRepo.createAdoptionStatus("pending");
 		AdoptionRequestStatus reqStatus2 = enumRepo.createAdoptionStatus("approved");
 		AdoptionRequestStatus reqStatus3 = enumRepo.createAdoptionStatus("rejected");
-		assertNotEquals(reqStatus1.getAdoption_request_status_id(), 0);
-		assertNotEquals(reqStatus2.getAdoption_request_status_id(), 0);
-		assertNotEquals(reqStatus3.getAdoption_request_status_id(), 0);
+		assertNotEquals(0, reqStatus1.getAdoption_request_status_id());
+		assertNotEquals(0, reqStatus2.getAdoption_request_status_id());
+		assertNotEquals(0, reqStatus3.getAdoption_request_status_id());
 	}
 
 	@Test
@@ -108,19 +108,19 @@ class TestAdoptRequest {
 		// Create dummy user 1
 		CreateUserDTO createUser1DTO = new CreateUserDTO("firstName", "lastName", "username", "password", "email");
 		User user1 = loginRepo.createUser(createUser1DTO);
-		assertNotEquals(user1.getUser_id(), 0);
+		assertNotEquals(0, user1.getUser_id());
 
 		// create dummy user 2
 		CreateUserDTO createUser2DTO = new CreateUserDTO("new_firstName", "new_lastName", "new_username",
 				"new_password", "new_email");
 		User user2 = loginRepo.createUser(createUser2DTO);
-		assertNotEquals(user2.getUser_id(), 0);
+		assertNotEquals(0, user2.getUser_id());
 
 		// create dummy user 3
 		CreateUserDTO createUser3DTO = new CreateUserDTO("newer_firstName", "newer_lastName", "newer_username",
 				"newer_password", "newer_email");
 		User user3 = loginRepo.createUser(createUser3DTO);
-		assertNotEquals(user3.getUser_id(), 0);
+		assertNotEquals(0, user3.getUser_id());
 
 		// create dummy pet 1
 		PetDTO petDto1 = new PetDTO();
@@ -132,7 +132,7 @@ class TestAdoptRequest {
 		petDto1.setPet_description("pet_description");
 		petDto1.setPet_image("image".getBytes());
 		Pet pet1 = petRepo.createPet(petDto1);
-		assertNotEquals(pet1.getPet_id(), 0);
+		assertNotEquals(0, pet1.getPet_id());
 
 		// create dummy pet 2
 		PetDTO petDto2 = new PetDTO();
@@ -144,7 +144,7 @@ class TestAdoptRequest {
 		petDto2.setPet_description("pet_description");
 		petDto2.setPet_image("image".getBytes());
 		Pet pet2 = petRepo.createPet(petDto2);
-		assertNotEquals(pet2.getPet_id(), 0);
+		assertNotEquals(0, pet2.getPet_id());
 
 		// create adoption request 1
 		String requestDescription1 = "pet request description";
@@ -165,9 +165,9 @@ class TestAdoptRequest {
 		testForDenialAfterApprovalID = adoptRequest3.getAdoption_request_id();
 
 		// check if ID was generated
-		assertNotEquals(adoptRequest1.getAdoption_request_id(), 0);
+		assertNotEquals(0, adoptRequest1.getAdoption_request_id());
 		// check if status is pending on generation
-		assertTrue(adoptRequest1.getAdoption_request_status().getAdoption_request_status().equals("pending"));
+		assertEquals("pending", adoptRequest1.getAdoption_request_status().getAdoption_request_status());
 		// check that created timestamp is not null
 		assertNotNull(adoptRequest1.getAdoption_request_created());
 		// ensure resolved timestamp was not automatically generated
@@ -215,7 +215,7 @@ class TestAdoptRequest {
 		petDto.setPet_description("digital pet_description");
 		petDto.setPet_image("image".getBytes());
 		Pet pet = petRepo.createPet(petDto);
-		assertNotEquals(pet.getPet_id(), 0);
+		assertNotEquals(0, pet.getPet_id());
 
 		// log in a user
 		User user = loginRepo.loginUser(new LoginDTO("username", "password"));
@@ -223,7 +223,7 @@ class TestAdoptRequest {
 
 		AdoptionRequest adoptRequest = requestRepo.createAdoptionRequest(user, pet, "digital pet request description");
 		// check request status. should be approved on creation
-		assertEquals(adoptRequest.getAdoption_request_status().getAdoption_request_status(), "approved");
+		assertEquals("approved", adoptRequest.getAdoption_request_status().getAdoption_request_status());
 	}
 
 	@Test
@@ -273,7 +273,7 @@ class TestAdoptRequest {
 	void testManagerGetsAllRequests() throws NotFoundException {
 		List<AdoptionRequest> petList = requestRepo.getManagerAllAdoptionRequest();
 		// pet list SHOULD have more at least one pet in it
-		assertNotEquals(petList.size(), 0);
+		assertNotEquals(0, petList.size());
 	}
 
 	@Test
@@ -307,8 +307,8 @@ class TestAdoptRequest {
 		AdoptionRequest ar = requestRepo.managerApproveDenyRequest(1, dto);
 		System.out.println(ar);
 		assertNotNull(ar.getAdoption_request_resolved());
-		assertEquals(ar.getAdoption_request_response(), "reason");
-		assertEquals(ar.getAdoption_request_status().getAdoption_request_status(), "approved");
+		assertEquals("reason", ar.getAdoption_request_response());
+		assertEquals("approved", ar.getAdoption_request_status().getAdoption_request_status());
 	}
 
 	@Test
@@ -336,10 +336,11 @@ class TestAdoptRequest {
 		//make sure this is for pet 1
 		Pet pet1 = petRepo.getPetById(1);
 		assertEquals(pet1, ar.getAdoption_request_pet());
+		assertEquals("adopted", pet1.getPet_status().getPet_status());
 		
 		// another user requested to adopt this pet
 		// after it was approved, expect that it is rejected
-		assertEquals(ar.getAdoption_request_status().getAdoption_request_status(), "rejected");
+		assertEquals("rejected", ar.getAdoption_request_status().getAdoption_request_status());
 	}
 
 	@Test
