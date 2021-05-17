@@ -73,7 +73,7 @@ public class PetRepo {
 	@Transactional
 	public List<Pet> getAllPets() throws NotFoundException{
 		Session session = sessionFactory.getCurrentSession();
-		List<Pet> petList = new ArrayList<>();
+		List<Pet> petList = null;
 		
 		//load up proxy object
 		String hqlStatus = "FROM PetStatus ps WHERE ps.pet_status=:pet_status";
@@ -114,7 +114,7 @@ public class PetRepo {
 	
 	public Pet updatePetById(int id, PetDTO updatePetDTO) throws UpdateException {
 		Session session = sessionFactory.getCurrentSession();
-		Pet pet = new Pet();
+		Pet pet = null;
 		
 		String hql = "UPDATE Pet p SET p.pet_name=:name, p.pet_age=:age, p.pet_species=:species, p.pet_breed=:breed,"
 				+ "p.pet_description=:description ";		
@@ -126,7 +126,7 @@ public class PetRepo {
 		//lastly add where condition
 		hql = hql.concat(" WHERE p.pet_id = :id");
 		
-		Query query = session.createQuery(hql);
+		Query<?> query = session.createQuery(hql);
 		query.setParameter("name", updatePetDTO.getPet_name());
 		query.setParameter("age", updatePetDTO.getPet_age());
 		query.setParameter("species", updatePetDTO.getPet_species());
