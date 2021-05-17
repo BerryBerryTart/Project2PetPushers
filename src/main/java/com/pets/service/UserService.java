@@ -15,9 +15,6 @@ import com.pets.model.User;
 
 @Service
 public class UserService {
-
-	@Autowired
-	private User userDAO;
 	
 	@Transactional(rollbackFor = { UserNotFoundException.class })
 	public User login(String username, String password) throws UserNotFoundException, NoSuchAlgorithmException {
