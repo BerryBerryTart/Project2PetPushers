@@ -14,8 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pets.DTO.CreateUserDTO;
 import com.pets.DTO.LoginDTO;
 import com.pets.DTO.MessageDTO;
+import com.pets.exception.BadInputException;
+import com.pets.exception.CreationException;
+import com.pets.exception.DatabaseExeption;
+import com.pets.exception.NotFoundException;
 import com.pets.exception.UserNotFoundException;
 import com.pets.model.User;
 import com.pets.service.UserService;
@@ -37,38 +42,49 @@ public class LoginController {
 		super();
 		this.userService = userService;
 	}
-	
-	@PostMapping(path = "/login_account")
-	public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws NoSuchAlgorithmException {
+
+	@PostMapping(path = "login_account")
+	public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws DatabaseExeption {
 		try {
-			User user = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
+			User user = userService.login(loginDTO);
 			HttpSession session = request.getSession(true);
-			
+
 			// For now sessionAttribute, TODO look into JWT's
 			session.setAttribute("loggedInUser", user);
-			
+
 			// Not sure if I should return user object but just in case
 			return ResponseEntity.status(200).body(user);
-		} catch (UserNotFoundException e) {
-			return ResponseEntity.status(400).build();
+		} catch (BadInputException e) {
+			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+		} catch (NotFoundException e) {
+			return ResponseEntity.status(404).body(new MessageDTO(e.getMessage()));
 		}
 	}
-	
-	@GetMapping(path = "/logout_account")
+
+	@PostMapping(path = "register_account")
+	public ResponseEntity<Object> addUser(@RequestBody CreateUserDTO createUserDTO) throws DatabaseExeption {
+		User user;
+		try {
+			user = userService.createUser(createUserDTO);
+		} catch (Exception e) {
+			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+		}
+		return ResponseEntity.status(200).body(user);
+	}
+
+	@GetMapping(path = "logout_account")
 	public ResponseEntity<Object> logout() {
 		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("loggedInUser") == null) {
-			return ResponseEntity.status(401)
-					.body(new MessageDTO("You must be logged in to access this resource"));
-		}else {
+			return ResponseEntity.status(401).body(new MessageDTO("You must be logged in to be able to logout"));
+		} else {
 			session.invalidate();
 			return ResponseEntity.status(201).build();
 		}
 	}
-	
-	//test endpoint
+
 	@GetMapping(path = "test")
-	public @ResponseBody String ourFirstEndpoint() {
-		return "Test";
+	public ResponseEntity<Object> test() {
+		return ResponseEntity.status(200).body("Test");
 	}
 }
