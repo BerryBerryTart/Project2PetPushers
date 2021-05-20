@@ -15,20 +15,15 @@ import com.pets.exception.DatabaseExeption;
 import com.pets.exception.NotFoundException;
 import com.pets.model.User;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@Service @NoArgsConstructor
+@Service @NoArgsConstructor @AllArgsConstructor
 public class UserService {
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	@Autowired
 	private LoginRepo loginRepo;
-	
-	// Constructor for mock insertion
-	public UserService(LoginRepo loginRepo) {
-		super();
-		this.loginRepo = loginRepo;
-	}
 	
 	@Transactional(rollbackFor = { NotFoundException.class, BadInputException.class})
 	public User login(LoginDTO loginDTO) throws NotFoundException, DatabaseExeption, BadInputException {

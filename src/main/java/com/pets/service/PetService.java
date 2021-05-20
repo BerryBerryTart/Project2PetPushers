@@ -13,20 +13,15 @@ import com.pets.exception.NotFoundException;
 import com.pets.exception.UpdateException;
 import com.pets.model.Pet;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @Service
 public class PetService {
 
 	@Autowired
 	private PetRepo petRepo;
-
-	//Constructor for mocking
-	public PetService(PetRepo petRepo) {
-		super();
-		this.petRepo = petRepo;
-	}
 
 	@Transactional(rollbackFor = BadInputException.class)
 	public Pet createPet(PetDTO inputPet) throws BadInputException {

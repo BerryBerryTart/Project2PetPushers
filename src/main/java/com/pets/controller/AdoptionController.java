@@ -74,18 +74,22 @@ public class AdoptionController {
 			return adoptionService.getAllAdoptionRequests(user);
 		} catch (NotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		} catch (NotAuthorizedException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		}
 	}
 	
 	@GetMapping(path = "view_adoption_status/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public AdoptionRequest getById(@PathVariable("id") int id) {
+	public AdoptionRequest getById(@PathVariable("id") int id) throws BadInputException {
 		HttpSession session = request.getSession(false);
 		User user = (User)session.getAttribute("loggedInUser");
 		try {
 			return adoptionService.getRequestById(id, user);
 		} catch (NotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		} catch (NotAuthorizedException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 		}
 	}
 	
