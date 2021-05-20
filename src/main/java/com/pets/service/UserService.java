@@ -47,9 +47,16 @@ public class UserService {
 	public User createUser(CreateUserDTO inputUser) throws BadInputException, CreationException, DatabaseExeption {
 		logger.info("UserService.createUser executed.");
 		//check if all fields in CreateUSerDTO are valid using regex
-		if (!inputUser.getFirst_name().trim().matches("^[a-zA-Z']+$")
-				&& !inputUser.getLast_name().trim().matches("^[a-zA-Z']+$")) {
-			throw new BadInputException("User name must contain only letters. User entered: "
+		if (inputUser.getFirst_name() == null || inputUser.getFirst_name().trim() == "") {
+			throw new BadInputException("Firstname cannot be blank.");
+		}
+		if (inputUser.getLast_name() == null || inputUser.getLast_name().trim() == "") {
+			throw new BadInputException("Lastname cannot be blank.");
+		}
+		if (!(inputUser.getFirst_name().trim().matches("^[a-zA-Z']+$"))
+				|| !(inputUser.getLast_name().trim().matches("^[a-zA-Z']+$"))) {
+			
+			throw new BadInputException("User full name must contain only letters. User entered: "
 					+ inputUser.getFirst_name() + " " + inputUser.getLast_name());
 		}
 		if (inputUser.getUsername() == null || inputUser.getUsername().trim() == "") {

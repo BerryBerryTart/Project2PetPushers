@@ -38,6 +38,9 @@ public class PetService {
 		if (inputPet.getPet_species() == null || inputPet.getPet_species().trim() == "") {
 			throw new BadInputException("Pet species cannot be blank.");
 		}
+		if (!inputPet.getPet_species().trim().matches("^[a-zA-Z]*$")) {
+			throw new BadInputException("Pet species can only contain letters and spaces");
+		}
 		if (!inputPet.getPet_breed().trim().matches("^[a-zA-Z]*$")) {
 			throw new BadInputException("Pet breed can only contain letters and spaces");
 		}
@@ -57,7 +60,7 @@ public class PetService {
 
 	@Transactional(rollbackFor = { BadInputException.class, NotFoundException.class })
 	public Pet getById(int id) throws BadInputException, NotFoundException {
-		if (id < 0) {
+		if (id < 1) {
 			throw new BadInputException("Invalid Id given: " + id);
 		}
 		return petRepo.getPetById(id);
@@ -65,7 +68,7 @@ public class PetService {
 
 	@Transactional(rollbackFor = { UpdateException.class, BadInputException.class })
 	public Pet updatePet(int id, PetDTO inputPet) throws UpdateException, BadInputException {
-		if (id < 0) {
+		if (id < 1) {
 			throw new BadInputException("Invalid Id given: " + id);
 		}
 		if (inputPet.getPet_name() == null || inputPet.getPet_name().trim() == "") {
@@ -74,11 +77,11 @@ public class PetService {
 		if (inputPet.getPet_age() < 0) {
 			throw new BadInputException("Pet age cannot be negative");
 		}
-		if (inputPet.getPet_species() == null || inputPet.getPet_species().trim() == "") {
-			throw new BadInputException("Pet species cannot be blank.");
+		if (!inputPet.getPet_species().trim().matches("^[a-zA-Z]*$")) {
+			throw new BadInputException("Pet species can only contain letters and spaces. Species cannot be blank.");
 		}
 		if (!inputPet.getPet_breed().trim().matches("^[a-zA-Z]*$")) {
-			throw new BadInputException("Pet breed can only contain letters and spaces");
+			throw new BadInputException("Pet breed can only contain letters and spaces. Breed cannot be blank");
 		}
 		if (inputPet.getPet_description() == null || inputPet.getPet_description().trim() == "") {
 			throw new BadInputException("Pet description cannot be blank.");
@@ -91,7 +94,7 @@ public class PetService {
 	
 	@Transactional(rollbackFor = {BadInputException.class, UpdateException.class})
 	public boolean deletePet(int id) throws BadInputException, UpdateException {
-		if (id < 0) {
+		if (id < 1) {
 			throw new BadInputException("Invalid Id given: " + id);
 		}
 		return petRepo.deletePetById(id);
