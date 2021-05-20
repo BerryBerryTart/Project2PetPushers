@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pets.DAO.AdoptionRequestRepo;
 import com.pets.DAO.LoginRepo;
 import com.pets.DAO.PetRepo;
+import com.pets.DTO.CreateRequestDTO;
 import com.pets.DTO.UpdateAdoptionRequestDTO;
 import com.pets.exception.BadInputException;
 import com.pets.exception.CreationException;
@@ -39,18 +40,18 @@ public class AdoptionService {
 	}
 	
 	@Transactional(rollbackFor = {BadInputException.class, NotFoundException.class, CreationException.class})
-	public AdoptionRequest createAdoptionRequest(int petId, User loggedInUser, String description) throws NotFoundException, BadInputException, CreationException {
+	public AdoptionRequest createAdoptionRequest(CreateRequestDTO adoptionRequest, User loggedInUser) throws NotFoundException, BadInputException, CreationException {
 		Pet pet;
 		User user = loggedInUser;
-		if(petId > 0) {
-			pet = petrepo.getPetById(petId);
+		if(adoptionRequest.getPetId() > 0) {
+			pet = petrepo.getPetById(adoptionRequest.getPetId());
 		}else {
 			throw new BadInputException("Pet id must be valid.");
 		}
-		if(description == null || description.trim().equals("")) {
+		if(adoptionRequest.getDescription() == null || adoptionRequest.getDescription().trim().equals("")) {
 			throw new BadInputException("Request description cannot be blank.");
 		}
-		return adoptionrepo.createAdoptionRequest(user, pet, description);
+		return adoptionrepo.createAdoptionRequest(user, pet, adoptionRequest.getDescription());
 	}
 	
 	@Transactional(rollbackFor = NotFoundException.class)
