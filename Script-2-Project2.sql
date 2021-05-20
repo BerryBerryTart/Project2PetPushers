@@ -68,3 +68,8 @@ CREATE TABLE adoption_requests (
 	CONSTRAINT `fk_adoption_requests_users` FOREIGN KEY (adoption_request_user) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT `fk_adoption_requests_adoption_requests_status` FOREIGN KEY (adoption_request_status) REFERENCES adoption_request_status (adoption_request_status_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+INSERT INTO pet_status (pet_status) VALUES ('unadopted'), ('adopted');
+INSERT INTO adoption_request_status (adoption_request_status) VALUES ('pending'), ('approved'), ('rejected');
+INSERT INTO pet_type (pet_type) VALUES ('real'), ('digital');
+INSERT INTO user_role (user_role) VALUES ('customer'), ('manager');
