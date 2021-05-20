@@ -10,6 +10,7 @@ main.js
 /src/main/resources/static/
 hibernate.cfg.xml
 .factorypath
+datasource-hibernate.properties
 
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
