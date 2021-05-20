@@ -1,7 +1,5 @@
 package com.pets.controller;
 
-import java.security.NoSuchAlgorithmException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,16 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.pets.DTO.CreateUserDTO;
 import com.pets.DTO.LoginDTO;
 import com.pets.DTO.MessageDTO;
 import com.pets.exception.BadInputException;
-import com.pets.exception.CreationException;
 import com.pets.exception.DatabaseExeption;
 import com.pets.exception.NotFoundException;
-import com.pets.exception.UserNotFoundException;
 import com.pets.model.User;
 import com.pets.service.UserService;
 
