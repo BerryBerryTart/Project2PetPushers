@@ -20,9 +20,10 @@ import com.pets.exception.NotFoundException;
 import com.pets.model.User;
 import com.pets.service.UserService;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @Controller
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class LoginController {
@@ -33,16 +34,11 @@ public class LoginController {
 	@Autowired
 	private HttpServletResponse response;
 
-	// Constructor for mock tests
-	public LoginController(UserService userService) {
-		super();
-		this.userService = userService;
-	}
-
 	@PostMapping(path = "login_account")
 	public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws DatabaseExeption {
 		try {
 			User user = userService.login(loginDTO);
+			System.out.println(request);
 			HttpSession session = request.getSession(true);
 
 			// For now sessionAttribute, TODO look into JWT's

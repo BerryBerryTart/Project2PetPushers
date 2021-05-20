@@ -22,9 +22,10 @@ import com.pets.exception.UpdateException;
 import com.pets.model.Pet;
 import com.pets.service.PetService;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @Controller
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class PetController {
@@ -34,12 +35,6 @@ public class PetController {
 	private HttpServletRequest request;
 	@Autowired
 	private HttpServletResponse response;
-	
-	//Constructor for mock tests
-	public PetController (PetService petService) {
-		super();
-		this.petService = petService;
-	}
 	
 	@PostMapping(path = "create_pet_adoption")
 	public ResponseEntity<Object> addPet(@RequestBody PetDTO petDTO){
