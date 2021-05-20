@@ -62,14 +62,14 @@ public class LoginController {
 	}
 
 	@PostMapping(path = "register_account")
-	public ResponseEntity<Object> addUser(@RequestBody CreateUserDTO createUserDTO) throws DatabaseExeption {
+	public ResponseEntity<Object> addUser(@RequestBody CreateUserDTO createUserDTO) {
 		User user;
 		try {
 			user = userService.createUser(createUserDTO);
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
 		}
-		return ResponseEntity.status(200).body(user);
+		return ResponseEntity.status(201).body(user);
 	}
 
 	@GetMapping(path = "logout_account")
@@ -79,7 +79,7 @@ public class LoginController {
 			return ResponseEntity.status(401).body(new MessageDTO("You must be logged in to be able to logout"));
 		} else {
 			session.invalidate();
-			return ResponseEntity.status(201).build();
+			return ResponseEntity.status(204).build();
 		}
 	}
 
