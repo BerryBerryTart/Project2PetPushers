@@ -5,16 +5,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.pets.DTO.CreateUserDTO;
 import com.pets.DTO.LoginDTO;
 import com.pets.DTO.MessageDTO;
 import com.pets.exception.BadInputException;
+import com.pets.exception.CreationException;
 import com.pets.exception.DatabaseExeption;
 import com.pets.exception.NotFoundException;
 import com.pets.model.User;
@@ -23,8 +29,9 @@ import com.pets.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor @AllArgsConstructor
-@Controller
+@NoArgsConstructor
+@AllArgsConstructor
+@RestController
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class LoginController {
 	@Autowired
@@ -35,7 +42,8 @@ public class LoginController {
 	private HttpServletResponse response;
 
 	@PostMapping(path = "login_account")
-	public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws DatabaseExeption {
+	@ResponseStatus(HttpStatus.OK)
+	public User login(@RequestBody LoginDTO loginDTO) throws DatabaseExeption {
 		try {
 			User user = userService.login(loginDTO);
 			System.out.println(request);
@@ -44,39 +52,45 @@ public class LoginController {
 			// For now sessionAttribute, TODO look into JWT's
 			session.setAttribute("loggedInUser", user);
 
-			// Not sure if I should return user object but just in case
-			return ResponseEntity.status(200).body(user);
+			return user;
 		} catch (BadInputException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		} catch (NotFoundException e) {
-			return ResponseEntity.status(404).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 
 	@PostMapping(path = "register_account")
-	public ResponseEntity<Object> addUser(@RequestBody CreateUserDTO createUserDTO) {
+	@ResponseStatus(code = HttpStatus.OK)
+	public User addUser(@RequestBody CreateUserDTO createUserDTO) {
 		User user;
 		try {
 			user = userService.createUser(createUserDTO);
-		} catch (Exception e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			return user;
+		} catch (BadInputException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		} catch (CreationException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		} catch (DatabaseExeption e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
-		return ResponseEntity.status(201).body(user);
 	}
 
 	@GetMapping(path = "logout_account")
-	public ResponseEntity<Object> logout() {
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void logout() {
 		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("loggedInUser") == null) {
-			return ResponseEntity.status(401).body(new MessageDTO("You must be logged in to be able to logout"));
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You must be logged in to log out.");
 		} else {
 			session.invalidate();
-			return ResponseEntity.status(204).build();
 		}
 	}
-
+	
+	//test endpoint
 	@GetMapping(path = "test")
-	public ResponseEntity<Object> test() {
-		return ResponseEntity.status(200).body("Test");
+	@ResponseStatus(code = HttpStatus.OK)
+	public MessageDTO ourFirstEndpoint() {
+		return new MessageDTO("Thanks for GET request!!!");
 	}
 }

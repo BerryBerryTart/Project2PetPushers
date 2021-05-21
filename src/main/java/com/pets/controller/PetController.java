@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.pets.DTO.MessageDTO;
 import com.pets.DTO.PetDTO;
 import com.pets.exception.BadInputException;
@@ -37,59 +41,64 @@ public class PetController {
 	private HttpServletResponse response;
 	
 	@PostMapping(path = "create_pet_adoption")
-	public ResponseEntity<Object> addPet(@RequestBody PetDTO petDTO){
+	@ResponseStatus(code =  HttpStatus.CREATED)
+	public Pet addPet(@RequestBody PetDTO petDTO){
 		Pet pet;
 		try {
 			pet = petService.createPet(petDTO);
+			return pet;
 		} catch (BadInputException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
-		return ResponseEntity.status(200).body(pet);
 	}
 	
 	@GetMapping(path = "view_adoptable_pet")
-	public ResponseEntity<Object> getAlllPets(){
+	@ResponseStatus(code =  HttpStatus.OK)
+	public List<Pet> getAlllPets(){
 		try {
 			List<Pet> resultList = petService.getAllPets();
-			return ResponseEntity.status(200).body(resultList);
+			return resultList;
 		} catch (NotFoundException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 	
 	@GetMapping(path = "view_adoptable_pet/{id}")
-	public ResponseEntity<Object> getById(@PathVariable("id") int id) {
+	@ResponseStatus(code =  HttpStatus.OK)
+	public Pet getById(@PathVariable("id") int id) {
 		try {
 			Pet pet = petService.getById(id);
-			return ResponseEntity.status(200).body(pet);
+			return pet;
 		} catch (BadInputException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		} catch (NotFoundException e) {
-			return ResponseEntity.status(404).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 	
-	@PostMapping(path = "view_pet_adoption/{id}")
-	public ResponseEntity<Object> updatePet (@RequestBody PetDTO petDTO, @PathVariable int id){
+	@PostMapping(path = "update_pet_adoption/{id}")
+	@ResponseStatus(code =  HttpStatus.OK)
+	public Pet updatePet (@RequestBody PetDTO petDTO, @PathVariable int id){
 		try {
 			Pet pet = petService.updatePet(id, petDTO);
-			return ResponseEntity.status(200).body(pet);
+			return pet;
 		} catch (UpdateException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (BadInputException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
 	
-	@DeleteMapping(path = "view_adoptable_pet/{id}")
-	public ResponseEntity<Object> deletePet (@PathVariable int id) {
+	@DeleteMapping(path = "delete_pet_adoption/{id}")
+	@ResponseStatus(code =  HttpStatus.OK)
+	public boolean deletePet (@PathVariable int id) {
 		try {
 			boolean deleteSuccessful = petService.deletePet(id);
-			return ResponseEntity.status(201).body(deleteSuccessful);
+			return deleteSuccessful;
 		} catch (BadInputException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		} catch (UpdateException e) {
-			return ResponseEntity.status(400).body(new MessageDTO(e.getMessage()));
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 }

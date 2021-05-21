@@ -29,9 +29,10 @@ import com.pets.model.AdoptionRequest;
 import com.pets.model.User;
 import com.pets.service.AdoptionService;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AdoptionController {
@@ -43,14 +44,8 @@ public class AdoptionController {
 	@Autowired
 	private HttpServletResponse response;
 	
-	//Constructor for mock tests
-	public AdoptionController(AdoptionService adoptionService) {
-		super();
-		this.adoptionService = adoptionService;
-	}
-	
 	@PostMapping(path = "make_adoption_request")
-	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseStatus(code =  HttpStatus.CREATED)
 	public AdoptionRequest createAdoptionrequest(@RequestBody CreateRequestDTO adoptionRequest) {
 		HttpSession session = request.getSession(false);
 		User user = (User)session.getAttribute("loggedInUser");
@@ -66,7 +61,7 @@ public class AdoptionController {
 	}
 	
 	@GetMapping(path = "view_adoption_status")
-	@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(code =  HttpStatus.OK)
 	public List<AdoptionRequest> getAllRequests(){
 		HttpSession session = request.getSession(false);
 		User user = (User)session.getAttribute("loggedInUser");
@@ -80,7 +75,7 @@ public class AdoptionController {
 	}
 	
 	@GetMapping(path = "view_adoption_status/{id}")
-	@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(code =  HttpStatus.OK)
 	public AdoptionRequest getById(@PathVariable("id") int id) throws BadInputException {
 		HttpSession session = request.getSession(false);
 		User user = (User)session.getAttribute("loggedInUser");
@@ -94,7 +89,7 @@ public class AdoptionController {
 	}
 	
 	@PutMapping(path = "update_adoption_request/{id}")
-	@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(code =  HttpStatus.OK)
 	public AdoptionRequest updateRequest(@PathVariable("id") int id, @RequestBody UpdateAdoptionRequestDTO adoptionRequest) {
 		HttpSession session = request.getSession(false);
 		User user = (User)session.getAttribute("loggedInUser");
