@@ -61,7 +61,7 @@ public class LoginController {
 	}
 
 	@PostMapping(path = "register_account")
-	@ResponseStatus(code = HttpStatus.OK)
+	@ResponseStatus(code = HttpStatus.CREATED)
 	public User addUser(@RequestBody CreateUserDTO createUserDTO) {
 		User user;
 		try {
@@ -72,7 +72,7 @@ public class LoginController {
 		} catch (CreationException e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (DatabaseExeption e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened in the database.");
 		}
 	}
 
