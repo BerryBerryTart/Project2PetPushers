@@ -27,12 +27,13 @@ public class UserService {
 	
 	@Transactional(rollbackFor = { NotFoundException.class, BadInputException.class})
 	public User login(LoginDTO loginDTO) throws NotFoundException, DatabaseExeption, BadInputException {
-		logger.info("UserService.login() executed.");
 		//Check if username or password is blank
-		if (loginDTO.getUsername() == null || loginDTO.getUsername().trim() == "") {
+		if (loginDTO.getUsername() == null || loginDTO.getUsername().trim().equals("")) {
+			logger.warn("UserService.login() blank username");
 			throw new BadInputException("Username cannot be blank.");
 		}
-		if (loginDTO.getPassword() == null || loginDTO.getPassword().trim() == "") {
+		if (loginDTO.getPassword() == null || loginDTO.getPassword().trim().equals("")) {
+			logger.warn("UserService.login() blank password");
 			throw new BadInputException("Password cannot be blank.");
 		}
 		return loginRepo.loginUser(loginDTO);
@@ -40,27 +41,32 @@ public class UserService {
 	
 	@Transactional(rollbackFor = {CreationException.class, BadInputException.class})
 	public User createUser(CreateUserDTO inputUser) throws BadInputException, CreationException, DatabaseExeption {
-		logger.info("UserService.createUser executed.");
 		//check if all fields in CreateUSerDTO are valid using regex
-		if (inputUser.getFirst_name() == null || inputUser.getFirst_name().trim() == "") {
+		if (inputUser.getFirst_name() == null || inputUser.getFirst_name().trim().equals("")) {
+			logger.warn("UserService.createUser() blank first name");
 			throw new BadInputException("Firstname cannot be blank.");
 		}
-		if (inputUser.getLast_name() == null || inputUser.getLast_name().trim() == "") {
+		if (inputUser.getLast_name() == null || inputUser.getLast_name().trim().equals("")) {
+			logger.warn("UserService.createUser() blank last name");
 			throw new BadInputException("Lastname cannot be blank.");
 		}
 		if (!(inputUser.getFirst_name().trim().matches("^[a-zA-Z']+$"))
 				|| !(inputUser.getLast_name().trim().matches("^[a-zA-Z']+$"))) {
-			
+
+			logger.warn("UserService.createUser() full name does not match regex");
 			throw new BadInputException("User full name must contain only letters. User entered: "
 					+ inputUser.getFirst_name() + " " + inputUser.getLast_name());
 		}
-		if (inputUser.getUsername() == null || inputUser.getUsername().trim() == "") {
+		if (inputUser.getUsername() == null || inputUser.getUsername().trim().equals("")) {
+			logger.warn("UserService.createUser() blank username");
 			throw new BadInputException("Username cannot be blank.");
 		}
-		if (inputUser.getPassword() == null || inputUser.getPassword().trim() == "") {
+		if (inputUser.getPassword() == null || inputUser.getPassword().trim().equals("")) {
+			logger.warn("UserService.createUser() blank password");
 			throw new BadInputException("Password cannot be blank.");
 		}
 		if (!inputUser.getEmail().trim().matches("^(.+)@(.+)$")) {
+			logger.warn("UserService.createUser() invalid email");
 			throw new BadInputException("Please enter a valid email. User entered:" + inputUser.getEmail());
 		}
 		return loginRepo.createUser(inputUser);

@@ -2,6 +2,8 @@ package com.pets.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Service
 public class AdoptionService {
+	private static Logger logger = LoggerFactory.getLogger(AdoptionService.class);
 
 	@Autowired
 	AdoptionRequestRepo adoptionrepo;
@@ -37,9 +40,11 @@ public class AdoptionService {
 		if(adoptionRequest.getPetId() > 0) {
 			pet = petrepo.getPetById(adoptionRequest.getPetId());
 		}else {
+			logger.warn("AdoptionService.createAdoptionRequest() invalid id");
 			throw new BadInputException("Pet id must be valid.");
 		}
 		if(adoptionRequest.getDescription() == null || adoptionRequest.getDescription().trim().equals("")) {
+			logger.warn("AdoptionService.createAdoptionRequest() blank description");
 			throw new BadInputException("Request description cannot be blank.");
 		}
 		return adoptionrepo.createAdoptionRequest(loggedInUser, pet, adoptionRequest.getDescription());
@@ -52,6 +57,7 @@ public class AdoptionService {
 		}else if(loggedInUser.getUser_role().getUser_role().equalsIgnoreCase("manager")){
 			return adoptionrepo.getManagerAllAdoptionRequest();
 		}else {
+			logger.warn("AdoptionService.getAllAdoptionRequests() invalid user role");
 			throw new NotAuthorizedException("User role must be customer or mangaer.");
 		}
 	}
@@ -59,6 +65,7 @@ public class AdoptionService {
 	@Transactional(rollbackFor = NotFoundException.class)
 	public AdoptionRequest getRequestById(int id, User loggedInUser) throws NotFoundException, NotAuthorizedException, BadInputException {
 		if(id < 1) {
+			logger.warn("AdoptionService.getRequestById() invalid id");
 			throw new BadInputException("Request id must be valid");
 		}
 		if(loggedInUser.getUser_role().getUser_role().equalsIgnoreCase("customer")) {
@@ -66,6 +73,7 @@ public class AdoptionService {
 		} else if(loggedInUser.getUser_role().getUser_role().equalsIgnoreCase("manager")){
 			return adoptionrepo.getManagerAdoptionRequestById(id);
 		}else {
+			logger.warn("AdoptionService.getRequestById() invalid user role");
 			throw new NotAuthorizedException("User role must be customer or mangaer.");
 		}
 	}
@@ -75,6 +83,7 @@ public class AdoptionService {
 		if(loggedInUser.getUser_role().getUser_role().equalsIgnoreCase("manager")) {
 			return adoptionrepo.managerApproveDenyRequest(id, update);
 		}else {
+			logger.warn("AdoptionService.getRequestById() invalid user role");
 			throw new NotAuthorizedException("User is not authorized to approve/deny requests.");
 		}
 	}
