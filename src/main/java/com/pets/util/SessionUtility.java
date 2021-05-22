@@ -28,7 +28,7 @@ public class SessionUtility {
 	}
 	
 	private static void getCreds() {
-		user = System.getenv("db.user");
-		pass = System.getenv("db.password");
+		user = System.getenv("db_user");
+		pass = System.getenv("db_password");
 	}
 }
