@@ -27,13 +27,13 @@ public class SpringORMHibernateConfig {
 	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
 		
-		dataSource.setDriverClassName(env.getProperty("jdbc.driver"));
+		dataSource.setDriverClassName(env.getProperty("jdbc_driver"));
 		
 		// Please use environment variables in a real app
 		dataSource
-		.setUrl(env.getProperty("jdbc.url"));
-		dataSource.setUsername(env.getProperty("jdbc.username"));
-		dataSource.setPassword(env.getProperty("jdbc.password"));
+		.setUrl(env.getProperty("jdbc_url"));
+		dataSource.setUsername(env.getProperty("jdbc_user"));
+		dataSource.setPassword(env.getProperty("jdbc_password"));
 		
 		return dataSource;
 	}
@@ -47,8 +47,8 @@ public class SpringORMHibernateConfig {
 		
 		// Configure hibernate properties
 		Properties hibernateProperties = new Properties();
-		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-		hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate_hbm2ddl_auto"));
+		hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate_dialect"));
 		
 		// Set the properties configured above
 		sessionFactory.setHibernateProperties(hibernateProperties);

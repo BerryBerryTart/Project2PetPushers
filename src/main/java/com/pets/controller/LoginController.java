@@ -1,29 +1,38 @@
 package com.pets.controller;
 
-import java.security.NoSuchAlgorithmException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.pets.DTO.CreateUserDTO;
 import com.pets.DTO.LoginDTO;
 import com.pets.DTO.MessageDTO;
-import com.pets.exception.UserNotFoundException;
+import com.pets.exception.BadInputException;
+import com.pets.exception.CreationException;
+import com.pets.exception.DatabaseExeption;
+import com.pets.exception.NotFoundException;
 import com.pets.model.User;
 import com.pets.service.UserService;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Controller
+@AllArgsConstructor
+@RestController
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class LoginController {
 	@Autowired
 	private UserService userService;
@@ -32,43 +41,56 @@ public class LoginController {
 	@Autowired
 	private HttpServletResponse response;
 
-	// Constructor for mock tests
-	public LoginController(UserService userService) {
-		super();
-		this.userService = userService;
-	}
-	
-	@PostMapping(path = "/login_account")
-	public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws NoSuchAlgorithmException {
+	@PostMapping(path = "login_account")
+	@ResponseStatus(HttpStatus.OK)
+	public User login(@RequestBody LoginDTO loginDTO) throws DatabaseExeption {
 		try {
-			User user = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
+			User user = userService.login(loginDTO);
+			System.out.println(request);
 			HttpSession session = request.getSession(true);
-			
+
 			// For now sessionAttribute, TODO look into JWT's
 			session.setAttribute("loggedInUser", user);
-			
-			// Not sure if I should return user object but just in case
-			return ResponseEntity.status(200).body(user);
-		} catch (UserNotFoundException e) {
-			return ResponseEntity.status(400).build();
+
+			return user;
+		} catch (BadInputException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		} catch (NotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
-	
-	@GetMapping(path = "/logout_account")
-	public ResponseEntity<Object> logout() {
+
+	@PostMapping(path = "register_account")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public User addUser(@RequestBody CreateUserDTO createUserDTO) {
+		User user;
+		try {
+			user = userService.createUser(createUserDTO);
+			return user;
+		} catch (BadInputException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		} catch (CreationException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		} catch (DatabaseExeption e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened in the database.");
+		}
+	}
+
+	@GetMapping(path = "logout_account")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void logout() {
 		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("loggedInUser") == null) {
-			return ResponseEntity.status(401)
-					.body(new MessageDTO("You must be logged in to access this resource"));
-		}else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You must be logged in to log out.");
+		} else {
 			session.invalidate();
-			return ResponseEntity.status(201).build();
 		}
 	}
 	
 	//test endpoint
 	@GetMapping(path = "test")
-	public @ResponseBody String ourFirstEndpoint() {
-		return "Test";
+	@ResponseStatus(code = HttpStatus.OK)
+	public MessageDTO ourFirstEndpoint() {
+		return new MessageDTO("Thanks for GET request!!!");
 	}
 }

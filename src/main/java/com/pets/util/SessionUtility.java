@@ -5,7 +5,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class SessionUtility {
-	private static String url;
 	private static String user;
 	private static String pass;
 	
@@ -18,7 +17,6 @@ public class SessionUtility {
 		if (sessionFactory == null) {
 			getCreds();
 			sessionFactory = new Configuration()
-					.setProperty("hibernate.connection.url", url)
 					.setProperty("hibernate.connection.username", user)
 					.setProperty("hibernate.connection.password", pass)
 					.configure("hibernate.cfg.xml").buildSessionFactory();
@@ -28,8 +26,7 @@ public class SessionUtility {
 	}
 	
 	private static void getCreds() {
-		url = System.getenv("db.url");
-		user = System.getenv("db.user");
-		pass = System.getenv("db.password");
+		user = System.getenv("db_user");
+		pass = System.getenv("db_password");
 	}
 }
