@@ -32,7 +32,7 @@ public class SpringORMHibernateConfig {
 		// Please use environment variables in a real app
 		dataSource
 		.setUrl(env.getProperty("jdbc.url"));
-		dataSource.setUsername(env.getProperty("jdbc.username"));
+		dataSource.setUsername(env.getProperty("jdbc.user"));
 		dataSource.setPassword(env.getProperty("jdbc.password"));
 		
 		return dataSource;
