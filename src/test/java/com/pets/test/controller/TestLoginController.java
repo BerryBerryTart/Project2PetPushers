@@ -61,7 +61,8 @@ public class TestLoginController {
 		String testJson = om.writeValueAsString(testUser);
 		
 		when(userService.createUser(testUser)).thenReturn(expectedUser);
-
+		when(request.getSession(eq(true))).thenReturn(session);
+		
 		this.mockmvc.perform(MockMvcRequestBuilders.post("/register_account").contentType(MediaType.APPLICATION_JSON)
 				.content(testJson)).andExpect(status().isCreated()).andExpect(content().json(expectedJson));
 	}
