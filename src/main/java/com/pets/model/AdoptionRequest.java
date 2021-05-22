@@ -17,8 +17,6 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Proxy;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

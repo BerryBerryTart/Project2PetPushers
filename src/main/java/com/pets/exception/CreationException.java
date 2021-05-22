@@ -8,20 +8,7 @@ public class CreationException extends Exception {
 		super();
 	}
 
-	public CreationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
-	public CreationException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 	public CreationException(String message) {
 		super(message);
-	}
-
-	public CreationException(Throwable cause) {
-		super(cause);
-	}
-	
+	}	
 }

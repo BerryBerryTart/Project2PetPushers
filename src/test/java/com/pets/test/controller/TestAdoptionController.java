@@ -69,8 +69,8 @@ class TestAdoptionController {
 		CreateRequestDTO test = new CreateRequestDTO();
 		String testJson = om.writeValueAsString(test);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.createAdoptionRequest(test, user)).thenReturn(expected);
 
 		this.mockmvc.perform(post("/make_adoption_request")
@@ -83,8 +83,8 @@ class TestAdoptionController {
 		CreateRequestDTO test = new CreateRequestDTO();
 		String testJson = om.writeValueAsString(test);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.createAdoptionRequest(test, user)).thenThrow(NotFoundException.class);
 
 		this.mockmvc.perform(post("/make_adoption_request")
@@ -96,8 +96,8 @@ class TestAdoptionController {
 		CreateRequestDTO test = new CreateRequestDTO();
 		String testJson = om.writeValueAsString(test);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.createAdoptionRequest(test, user)).thenThrow(BadInputException.class);
 
 		this.mockmvc.perform(post("/make_adoption_request")
@@ -109,8 +109,8 @@ class TestAdoptionController {
 		CreateRequestDTO test = new CreateRequestDTO();
 		String testJson = om.writeValueAsString(test);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.createAdoptionRequest(test, user)).thenThrow(CreationException.class);
 
 		this.mockmvc.perform(post("/make_adoption_request")
@@ -122,8 +122,8 @@ class TestAdoptionController {
 		List<AdoptionRequest> expected = new ArrayList<>();
 		String expectedJson = om.writeValueAsString(expected);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.getAllAdoptionRequests(user)).thenReturn(expected);
 
 		this.mockmvc.perform(get("/view_adoption_status")).andExpect(status().isOk())
@@ -132,8 +132,8 @@ class TestAdoptionController {
 
 	@Test
 	void testGetAllRequest_negative_notFound() throws Exception {
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.getAllAdoptionRequests(user)).thenThrow(NotFoundException.class);
 
 		this.mockmvc.perform(get("/view_adoption_status")).andExpect(status().isNotFound());
@@ -141,8 +141,8 @@ class TestAdoptionController {
 
 	@Test
 	void testGetAllRequest_negative_notAuthorized() throws Exception {
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.getAllAdoptionRequests(user)).thenThrow(NotAuthorizedException.class);
 
 		this.mockmvc.perform(get("/view_adoption_status")).andExpect(status().isUnauthorized());
@@ -153,8 +153,8 @@ class TestAdoptionController {
 		AdoptionRequest expected = new AdoptionRequest();
 		String expectedJson = om.writeValueAsString(expected);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.getRequestById(eq(1), eq(user))).thenReturn(expected);
 
 		this.mockmvc.perform(get("/view_adoption_status/1")).andExpect(status().isOk())
@@ -172,8 +172,8 @@ class TestAdoptionController {
 
 	@Test
 	void testGetById_negative_notAuthorized() throws Exception {
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.getRequestById(eq(1), eq(user))).thenThrow(NotAuthorizedException.class);
 
 		this.mockmvc.perform(get("/view_adoption_status/1"))
@@ -187,8 +187,8 @@ class TestAdoptionController {
 		UpdateAdoptionRequestDTO testRequest = new UpdateAdoptionRequestDTO();
 		String testJson = om.writeValueAsString(testRequest);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.approveDenyRequest(eq(1), eq(testRequest), eq(user))).thenReturn(expected);
 
 		this.mockmvc
@@ -201,8 +201,8 @@ class TestAdoptionController {
 		UpdateAdoptionRequestDTO testRequest = new UpdateAdoptionRequestDTO();
 		String testJson = om.writeValueAsString(testRequest);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.approveDenyRequest(eq(1), eq(testRequest), eq(user))).thenThrow(NotAuthorizedException.class);
 
 		this.mockmvc
@@ -215,8 +215,8 @@ class TestAdoptionController {
 		UpdateAdoptionRequestDTO testRequest = new UpdateAdoptionRequestDTO();
 		String testJson = om.writeValueAsString(testRequest);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.approveDenyRequest(eq(1), eq(testRequest), eq(user))).thenThrow(UpdateException.class);
 
 		this.mockmvc
@@ -229,8 +229,8 @@ class TestAdoptionController {
 		UpdateAdoptionRequestDTO testRequest = new UpdateAdoptionRequestDTO();
 		String testJson = om.writeValueAsString(testRequest);
 
-		when(request.getSession(eq(false))).thenReturn(session);
-		when(session.getAttribute(eq("loggedInUser"))).thenReturn(user);
+		when(request.getSession(false)).thenReturn(session);
+		when(session.getAttribute("loggedInUser")).thenReturn(user);
 		when(adoptionService.approveDenyRequest(eq(1), eq(testRequest), eq(user))).thenThrow(NotFoundException.class);
 
 		this.mockmvc
