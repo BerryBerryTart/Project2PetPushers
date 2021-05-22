@@ -149,11 +149,11 @@ class TestPetDAO {
 		Pet pet = petRepo.updatePetById(1, dto);
 
 		// update assertions
-		assertTrue(pet.getPet_age() == 10);
-		assertTrue(pet.getPet_name().equals("new pet_name"));
-		assertTrue(pet.getPet_breed().equals("new pet_breed"));
-		assertTrue(pet.getPet_species().equals("new pet_species"));
-		assertTrue(pet.getPet_description().equals("new pet_description"));
+		assertEquals(10, pet.getPet_age());
+		assertEquals("new pet_name", pet.getPet_name());
+		assertEquals("new pet_breed", pet.getPet_breed());
+		assertEquals("new pet_species", pet.getPet_species());
+		assertEquals("new pet_description", pet.getPet_description());
 
 		// make sure created date remains immutable
 		assertEquals(created, pet.getPet_list_date());

@@ -1,5 +1,7 @@
 package com.pets.model;
 
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +24,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "user")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode @ToString
-public class User {
+public class User implements Serializable{
+	private static final long serialVersionUID = -8835091542364195449L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
