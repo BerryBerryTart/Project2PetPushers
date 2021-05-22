@@ -67,6 +67,9 @@ class TestUserService {
 				Arguments.of("1","lastname","username","password","email@email.com"),
 				Arguments.of("firstname","1","username","password","email@email.com"),
 				Arguments.of("firstname","lastname","username","password","bad email"),
+				Arguments.of("firstname","","username","password","bad email"),
+				Arguments.of("firstname","lastname","","password","bad email"),
+				Arguments.of("firstname","lastname","username","","bad email"),
 				Arguments.of(null,null,null,null,null)
 				);
 	}

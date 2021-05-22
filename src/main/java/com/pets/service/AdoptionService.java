@@ -36,7 +36,7 @@ public class AdoptionService {
 	
 	@Transactional(rollbackFor = {BadInputException.class, NotFoundException.class, CreationException.class})
 	public AdoptionRequest createAdoptionRequest(CreateRequestDTO adoptionRequest, User loggedInUser) throws NotFoundException, BadInputException, CreationException {
-		Pet pet = new Pet();
+		Pet pet = null;
 		if(adoptionRequest.getPetId() > 0) {
 			pet = petrepo.getPetById(adoptionRequest.getPetId());
 		}else {

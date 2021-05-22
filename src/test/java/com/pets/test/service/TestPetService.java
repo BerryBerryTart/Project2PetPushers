@@ -79,6 +79,7 @@ class TestPetService {
 				Arguments.of(1,"name","breed1","species","description","real"),
 				Arguments.of(1,"name","breed","species1","description","real"),
 				Arguments.of(1,"name","breed","species","description","not real"),
+				Arguments.of(1,"name","breed1","species","","real"),
 				Arguments.of(1,null,null,null,null,null)
 				);
 	}
