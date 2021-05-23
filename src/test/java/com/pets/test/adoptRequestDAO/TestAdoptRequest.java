@@ -184,7 +184,7 @@ class TestAdoptRequest {
 		List<AdoptionRequest> petList = requestRepo.getUserAllAdoptionRequest(user1);
 
 		// pet list SHOULD have more at least one pet in it
-		assertNotEquals(petList.size(), 0);
+		assertNotEquals(0, petList.size());
 	}
 
 	@Test
@@ -197,7 +197,7 @@ class TestAdoptRequest {
 		List<AdoptionRequest> petList = requestRepo.getUserAllAdoptionRequest(user2);
 
 		// pet list SHOULD have more at least one pet in it
-		assertEquals(petList.size(), 0);
+		assertEquals(0, petList.size());
 	}
 
 	@Test

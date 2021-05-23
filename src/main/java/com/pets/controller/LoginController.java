@@ -63,6 +63,10 @@ public class LoginController {
 		User user;
 		try {
 			user = userService.createUser(createUserDTO);
+			
+			HttpSession session = request.getSession(true);
+			session.setAttribute("loggedInUser", user);
+
 			return user;
 		} catch (BadInputException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

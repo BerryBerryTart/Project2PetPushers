@@ -48,7 +48,7 @@ public class PetService {
 			logger.warn("PetService.createPet() blank description");
 			throw new BadInputException("Pet description cannot be blank.");
 		}
-		if (!(inputPet.getPet_type() == "real") && !(inputPet.getPet_type() == "digital")) {
+		if (!(inputPet.getPet_type().equals("real") ) && !(inputPet.getPet_type().equals("digital") )) {
 			logger.warn("PetService.createPet() invalid type");
 			throw new BadInputException("Pet type can only be \"real\" or \"digital\"");
 		}
@@ -95,7 +95,7 @@ public class PetService {
 			logger.warn("PetService.updatePet() blank description");
 			throw new BadInputException("Pet description cannot be blank.");
 		}
-		if (!(inputPet.getPet_type() == "real") && !(inputPet.getPet_type() == "digital")) {
+		if (!(inputPet.getPet_type().equals("real") ) && !(inputPet.getPet_type().equals("digital") )) {
 			logger.warn("PetService.updatePet() invalid type");
 			throw new BadInputException("Pet type can only be \"real\" or \"digital\"");
 		}
