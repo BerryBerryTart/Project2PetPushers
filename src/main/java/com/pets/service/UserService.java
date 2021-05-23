@@ -1,5 +1,7 @@
 package com.pets.service;
 
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,8 @@ public class UserService {
 			logger.warn("UserService.createUser() blank password");
 			throw new BadInputException("Password cannot be blank.");
 		}
-		if (!inputUser.getEmail().trim().matches("^(.+)@(.+)$")) {
+		// now uses pattern matching to avoid "polynomial runtime due to backtracking"
+		if ( !Pattern.matches("^(.+)@(.+)$", inputUser.getEmail().trim()) ) {
 			logger.warn("UserService.createUser() invalid email");
 			throw new BadInputException("Please enter a valid email. User entered:" + inputUser.getEmail());
 		}
