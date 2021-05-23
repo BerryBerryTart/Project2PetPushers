@@ -99,6 +99,9 @@ Pets For Lonely People is a pet adoption website. Visitors can freely browse pet
     - Byte array image of the respective pet
     - Defaults to `unadopted`
     - Of type `unadopted` or `adopted`
+- `pet_type`
+    - Defines a pet as real or digital
+    - Of type `real` or `digital`
 
 ## Adoption Requests
 - `GET /view_adoption_status` : Returns all adoption requests
