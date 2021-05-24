@@ -13,6 +13,7 @@ Pets For Lonely People is a pet adoption website. Visitors can freely browse pet
 
 ## Technology Used
 - Java 1.8
+- Angular
 - Spring
 - JDBC
 - Logback / SLF4J
@@ -21,6 +22,10 @@ Pets For Lonely People is a pet adoption website. Visitors can freely browse pet
 - MariaDB / H2 (testing)
 - Hibernate
 - JaCoCo
+- Maven
+
+### Frontend Repoitory
+[Github Repository](https://github.com/bsarvaiya24/project2angular)
 
 # Backend Endpoints
 
